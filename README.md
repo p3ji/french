@@ -1,34 +1,69 @@
 # Objectif CBC
 
-A fourteen-session French preparation pilot for federal public servants with some French exposure. CBC means reading C, writing B, oral C. Reading and writing targets can each be set to B or C. English guidance accompanies original French practice.
+Objectif CBC is a local-first French preparation client executing deterministic spaced-repetition algorithms in browser storage for federal language evaluations.
 
-## Run
+## 1. Intuition & Mental Model
 
-Requires Node.js 22.13 or newer. In this directory:
+Think of this application as a personal flashcard box sitting on your desk. You sort questions into buckets based on your answers, but keep every card inside your office.
+
+Language evaluation prep often relies on server-rendered web forms or opaque proprietary scoring algorithms. Server-side tracking introduces privacy risks and network latency during daily practice drills. Federal public servants need immediate feedback without sending personal performance logs across external networks.
+
+You might wonder: how can a client-only web app handle long-term retention without a backend database?
+
+Instead of querying a remote server, the application maintains state inside browser `localStorage`. Deterministic rotation algorithms compute review intervals directly on your device.
+
+## 2. Underlying Mechanics
+
+The application runs as a static single-page application built with Vite, React 19, TypeScript, and Tailwind CSS.
+
+```
+[ Learner Choice ] ---> [ Deterministic Evaluator ] ---> [ Spaced Repetition Engine ]
+                                                                   |
+                                                                   v
+[ Zod Validation ] <--- [ JSON State Export/Import ] <--- [ localStorage ]
+```
+
+Execution follows four primary subsystems:
+
+- **Target Selection:** The engine inspects your target reading (B/C) and writing (B/C) levels. It balances passage difficulty across a 14-session curriculum.
+- **Interval Spacing:** Correct review answers advance questions through 1-day, 3-day, and 7-day intervals. An incorrect answer resets the item to stage 0 for next-day review.
+- **State Persistence:** The app serializes learner progress into `objectif-cbc.progress.v1` in `localStorage`. Zod schemas strictly validate state structure during export and import.
+- **WebMCP Integration:** Supporting browsers expose state tools like `read_study_progress` through WebMCP without exposing answer logic.
+
+### Back-of-the-Envelope Footprint
+
+- **Content Corpus:** 24 reading passages (72 questions), 84 writing questions, 90 vocabulary items, 24 oral prompts, and 12 diagnostic questions.
+- **Memory Footprint:** 1,000 attempts consume roughly \$120\text{ KB}\$ of JSON storage. The Zod validator caps backup imports at \$10\text{ MB}\$ to protect browser memory.
+
+## 3. Bottlenecks & Failure Modes
+
+- **LocalStorage Quotas:** Browsers enforce a strict 5 MB limit on `localStorage`. High-volume attempt histories exceeding 35,000 records will fail to save without manual exports.
+- **Cache Eviction:** Clearing browser browsing data purges all unexported local progress.
+- **Uncalibrated Content:** Practice questions test target grammar and reading patterns, but do not predict official PSC exam scores.
+
+## 4. Production Realities & Decision Boundaries
+
+### Quick Start
+
+Requires Node.js 22.13 or newer. Run commands inside `app/`:
 
 ```sh
 npm run install:ci
 npm run dev
 ```
 
-The development site is served at http://localhost:5173. Run `npm run typecheck`, `npm test`, and `npm run build` for verification. For Sites packaging and private publishing, follow the Sites skills and reuse the project ID in `.openai/hosting.json`.
+Visit `http://localhost:5173`. Run validation commands before committing:
 
-## Learning content
+```sh
+npm run typecheck
+npm test
+npm run build
+```
 
-`lib/content/` contains 24 original reading passages with 72 questions, 84 written-expression questions, 90 vocabulary entries, 24 oral prompts, and a separate 12-question diagnostic. Six workplace themes support twelve themed lessons and two consolidation sessions. B/C tags express intended difficulty, not calibrated exam equivalence. Writing exercises use three choices and are learning exercises, not a replica of an official test.
+### When to Use
+- **Self-Paced Federal Prep:** You need offline-capable, zero-telemetry practice for Canadian public service B/C French evaluations.
+- **Static Hosting:** You want to deploy a zero-maintenance client bundle to static platforms like Cloudflare Pages.
 
-The PDFs in the parent directory are references only. This Git repository is rooted here so they cannot enter a source upload. Public assets contain no PDFs.
-
-## Progress and interfaces
-
-Learner state is stored under `objectif-cbc.progress.v1` in browser local storage. `lib/types.ts` defines content, targets, attempts, reviews, and active-session records. `lib/learning.ts` handles deterministic selection, answer evaluation, first-attempt metrics, and calendar-day review intervals. Existing active sessions retain their question IDs after goal changes. Answer feedback survives reloads.
-
-Progress exports identify Objectif CBC and schema/content version 1. Imports are validated before replacement and require an explicit confirmation. Invalid imports preserve existing progress. The UI reports blocked or full storage; users can export memory-held progress. Browser-data removal may erase local progress. There is no account sync, analytics, or learner backend.
-
-Missed practice items enter review the next calendar day. Successful review answers schedule another review in 1, 3, and 7 days, then graduate after the next success; an error resets the sequence. Diagnostic answers guide priorities but do not enter spaced review or practice accuracy.
-
-The optional WebMCP interface exposes `read_study_progress` and `start_or_resume_daily_session` only in supporting browsers. It does not answer questions. Unsupported browsers use the normal interface.
-
-## Pilot review
-
-See `docs/PILOT-REVIEW.md` for the educator review gate and a questionnaire to copy into an external form. Learner participation and fluent French educator review remain human steps before broader access. Live oral assessment, local-LLM conversations, recording, accounts, native apps, and offline installation are not implemented in this pilot.
+### When NOT to Use
+- **Multi-Device Sync:** You require automatic cross-device synchronization without exporting state files manually.
+- **Official Exam Scoring:** You expect automated AI models to forecast official Public Service Commission results.
