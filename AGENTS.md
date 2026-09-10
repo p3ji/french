@@ -10,7 +10,7 @@ French preparation pilot for federal public servants working toward B/C levels.
 
 ## Active Status & 10x Expansion Note
 - **Repository Remote:** Linked and pushed to `https://github.com/p3ji/french.git`.
-- **Chip-Style README:** `app/README.md` formatted per Chip Huyen style guidelines.
+- **Structured Technical README:** `app/README.md` formatted with concise system mechanics and operational decision boundaries.
 - **10x Content Corpus:** Expanded to 240 reading passages (720 reading Qs), 840 writing Qs, 900 vocabulary entries, 240 oral prompts, and 120 diagnostic Qs across 18 workplace themes.
 - **140 Curriculum Sessions:** Structured into 10 Modules (14 sessions each) with a Module Selector and session search filter in `components/learning-app.tsx`.
 - **Validation:** Run `node scripts/validate-content.mjs` to lint all question IDs, option bounds, and distractor explanation lengths (>15 chars).
