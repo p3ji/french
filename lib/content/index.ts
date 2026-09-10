@@ -1,0 +1,13 @@
+import { themes } from './themes';
+import { passages, readingQuestions } from './reading';
+import { writingQuestions } from './writing';
+import { vocabulary, oralPrompts } from './resources';
+import { diagnosticPassages, diagnosticQuestions } from './diagnostic';
+export { themes, vocabulary, oralPrompts, diagnosticQuestions };
+export const contentVersion=1;
+export const allPassages=[...passages,...diagnosticPassages];
+export const dailyQuestions=[...readingQuestions,...writingQuestions];
+export const allQuestions=[...dailyQuestions,...diagnosticQuestions];
+export const questionById=Object.fromEntries(allQuestions.map(q=>[q.id,q]));
+export const passageById=Object.fromEntries(allPassages.map(p=>[p.id,p]));
+export const programme=Array.from({length:14},(_,i)=>({id:`session-${i+1}`,number:i+1,theme:i<12?themes[Math.floor(i/2)].id:undefined,lessonIndex:i%2,title:i<12?(i%2===0?themes[Math.floor(i/2)].french:'Aller plus loin.'):i===12?'Relier les idées.':'Faire le point.',description:i<12?themes[Math.floor(i/2)].description:i===12?'Connect ideas across workplace themes and revisit your weaker skills.':'Bring your learning together, then choose what to practise next.'}));
