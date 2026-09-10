@@ -1,105 +1,16085 @@
-import type { Passage, Question, ThemeId, Level } from '../types';
-type Check = [string,string,string,string,string,string,string];
-// Each option has its own explanation. Correct options are rotated deterministically.
-const passages: Passage[]=[]; const questions: Question[]=[];
-function add(theme:ThemeId,level:Level,title:string,text:string,checks:Check[]){
- const id=`r-${theme}-${passages.filter(p=>p.theme===theme).length+1}`;passages.push({id,theme,level,title,text});
- checks.forEach(([prompt,correct,why,bad1,why1,bad2,why2],i)=>{const shift=(passages.length+i)%3;const opts=[correct,bad1,bad2];const ex=[why,why1,why2];for(let k=0;k<shift;k++){opts.push(opts.shift()!);ex.push(ex.shift()!)}questions.push({id:`${id}-q${i+1}`,theme,level,skill:'reading',objective:i===0?'Explicit meaning':i===1?'Main idea':level==='C'?'Tone and nuance':'Inference',passageId:id,prompt,options:opts,explanations:ex,answer:(3-shift)%3})});
-}
-add('training','B','Une place à confirmer',`Bonjour, il reste quatre places à l’atelier de rédaction claire du 18 octobre. Pour vous inscrire, faites approuver votre demande par votre gestionnaire, puis transmettez-la à l’équipe de formation avant vendredi. L’atelier est offert en ligne. Les personnes inscrites recevront le lien de connexion la veille. Aucun déplacement n’est nécessaire.`,[
- ['Que faut-il faire avant de transmettre la demande?','Obtenir l’accord de son gestionnaire.','“Faites approuver… puis transmettez-la” gives the required order.','Recevoir le lien de connexion.','The link arrives the day before the workshop, after registration.','Réserver un déplacement.','“Aucun déplacement” explicitly rules this out.'],
- ['Quel est le but principal du message?','Expliquer comment s’inscrire à un atelier.','The message gives available places and registration steps.','Présenter les résultats d’un atelier.','No results are discussed; the workshop is upcoming.','Annoncer une formation obligatoire.','The message offers places without making attendance mandatory.'],
- ['Une personne inscrite doit-elle se rendre dans une salle?','Non, elle participera à distance.','“Offert en ligne” and “aucun déplacement” support remote participation.','Oui, la salle sera annoncée vendredi.','Friday is the registration deadline; no room is promised.','Oui, sauf si son gestionnaire refuse.','The approval concerns registration, not the delivery format.']]);
-add('training','B','Un apprentissage à partager',`Après le cours sur les tableaux de bord, chaque participant est invité à présenter un exemple utile à ses collègues. Cette présentation de dix minutes aura lieu pendant une réunion d’équipe. Il ne s’agit pas de reprendre tout le contenu du cours. Choisissez plutôt une méthode que vous avez déjà appliquée à un dossier. Les présentations commenceront en novembre.`,[
- ['Combien de temps doit durer la présentation?','Dix minutes.','The passage specifies “présentation de dix minutes”.','Une réunion entière.','The presentation takes place during the meeting, not throughout it.','Tout le mois de novembre.','November is the starting month, not the duration.'],
- ['Que souhaite-t-on surtout partager?','Une application concrète du cours.','“Une méthode… déjà appliquée” establishes the practical focus.','L’intégralité du contenu du cours.','“Il ne s’agit pas de reprendre tout le contenu” excludes that.','Une évaluation des formateurs.','The text requests an example, not a trainer evaluation.'],
- ['Quel exemple correspond à la demande?','Un tableau utilisé pour suivre les demandes de son service.','An example already used in a work file fits the stated purpose.','Une liste de tous les chapitres du cours.','A chapter list is a summary, not an applied method.','Une méthode que personne n’a encore essayée.','The text asks for a method the presenter has already applied.']]);
-add('training','C','Au-delà du taux de participation',`Le taux de participation aux formations a augmenté cette année. Ce résultat est encourageant, mais il ne suffit pas à démontrer que les pratiques ont changé. Nous proposons donc un suivi trois mois après chaque activité, fondé sur des exemples d’utilisation des acquis. Ce suivi ne servirait pas à classer les employés : il permettrait plutôt d’ajuster l’offre aux besoins réels des équipes.`,[
- ['Quand le suivi proposé aurait-il lieu?','Trois mois après chaque activité.','The timing is explicitly “trois mois après chaque activité”.','Avant chaque inscription.','The proposal concerns post-training follow-up.','Uniquement à la fin de l’année.','“Chaque activité” rules out a single annual follow-up.'],
- ['Quelle idée défend le texte?','Évaluer l’utilisation des acquis, au-delà de la présence aux cours.','The contrast between participation and changed practices is the central argument.','Remplacer toutes les formations par des évaluations.','The author proposes adjusting training, not eliminating it.','Classer les employés selon leur assiduité.','The passage expressly rejects ranking employees.'],
- ['Comment l’auteur considère-t-il la hausse de participation?','Comme un signe positif, mais insuffisant à lui seul.','“Encourageant, mais… ne suffit pas” combines approval and qualification.','Comme la preuve définitive d’un changement de pratiques.','The author says the opposite: it is not enough to demonstrate change.','Comme un résultat sans aucun intérêt.','Calling it encouraging gives it some value.']]);
-add('training','C','Une formule à adapter',`La formation autonome permet de progresser à son rythme. Encore faut-il que du temps lui soit réellement consacré. Sans plages protégées, les urgences risquent de la reléguer au second plan. Une formule mixte, associant modules individuels et échanges courts, pourrait limiter cet écueil. Elle ne serait toutefois pertinente que si les gestionnaires reconnaissent ces plages comme du temps de travail à part entière.`,[
- ['Quelle formule est envisagée?','Des modules individuels accompagnés de courts échanges.','The text explicitly defines the mixed format this way.','Uniquement des cours magistraux.','The proposed format includes autonomous modules.','Des échanges sans aucun module individuel.','Both elements are required in the stated proposal.'],
- ['Quelle condition est essentielle au succès de la formule?','Reconnaître et protéger le temps consacré à la formation.','“Encore faut-il” and the final condition make time protection central.','Supprimer toutes les urgences du service.','The text proposes protected time, not eliminating every emergency.','Permettre seulement l’apprentissage hors des heures de travail.','“Temps de travail à part entière” directly contradicts this.'],
- ['Que signifie « pourrait limiter cet écueil »?','La formule est une solution possible, sans garantie absolue.','“Pourrait” is conditional and “limiter” means reduce, not eliminate.','La formule éliminera certainement tout obstacle.','Neither certainty nor total elimination is expressed.','La formule a déjà échoué dans toutes les équipes.','No past trial or failure is reported.']]);
-add('teamwork','B','Un relais pendant les congés',`Pendant l’absence de Samira, du 4 au 15 mai, Julien répondra aux demandes courantes. Les dossiers urgents seront transmis à la cheffe d’équipe. Avant son départ, Samira déposera un état d’avancement dans le dossier partagé. Merci de consulter ce document avant de joindre Julien : il contient les échéances et les coordonnées utiles.`,[
- ['Qui recevra les dossiers urgents?','La cheffe d’équipe.','Urgent files are explicitly assigned to the team lead.','Julien uniquement.','Julien handles routine requests; urgent files have a different recipient.','Samira pendant ses congés.','The message sets up coverage for her absence.'],
- ['À quoi sert ce message?','Organiser la continuité du travail pendant une absence.','It explains coverage, escalation, and the handover document.','Modifier définitivement les postes de l’équipe.','The arrangement is limited to the stated absence.','Annuler toutes les échéances.','Deadlines are documented, not cancelled.'],
- ['Que devrait faire un collègue qui cherche une échéance?','Consulter d’abord le dossier partagé.','The text asks colleagues to check the document before contacting Julien.','Appeler immédiatement Samira.','This bypasses the stated handover process.','Attendre le retour de Samira.','The shared document is intended to make waiting unnecessary.']]);
-add('teamwork','B','Des réunions plus utiles',`À compter de lundi, notre rencontre hebdomadaire durera trente minutes. Envoyez vos points à l’ordre du jour le jeudi précédent. Chaque point doit préciser si une décision est attendue ou s’il s’agit simplement d’une information. Les documents longs seront lus avant la rencontre. Nous conserverons cinq minutes à la fin pour confirmer les responsabilités.`,[
- ['Quand faut-il envoyer les points à discuter?','Le jeudi précédent la rencontre.','The deadline is explicitly “le jeudi précédent”.','Pendant les cinq dernières minutes.','Those minutes are reserved for responsibilities.','Après la rencontre du lundi.','Points must be sent beforehand.'],
- ['Quel est l’objectif de ces changements?','Mieux préparer une réunion courte et orientée vers l’action.','Preparation, decision labels, and responsibilities support this purpose.','Éviter toute prise de décision.','The text specifically allows points requiring decisions.','Lire ensemble tous les documents longs.','Long documents are to be read before the meeting.'],
- ['Que doit préciser un point à l’ordre du jour?','Si une décision est nécessaire.','This is a stated requirement for each item.','Le nombre total de pages de tous les documents.','No such count is requested.','Le nom de tous les employés absents.','Attendance reporting is not discussed.']]);
-add('teamwork','C','Une consultation plus représentative',`Les mêmes personnes prennent souvent la parole en réunion, ce qui peut donner l’impression d’un consensus plus large qu’il ne l’est. Recueillir des commentaires écrits en amont ne vise pas à réduire les échanges, mais à les enrichir. Il faudra néanmoins restituer les avis minoritaires dans la synthèse, faute de quoi le nouveau procédé reproduirait le biais qu’il cherche à corriger.`,[
- ['Que propose-t-on avant les réunions?','Recueillir des commentaires écrits.','“En amont” means beforehand and refers to written comments.','Supprimer les échanges oraux.','The passage explicitly says this is not the aim.','Faire voter uniquement les personnes les plus actives.','This would reinforce the stated problem and is not proposed.'],
- ['Quel problème cherche-t-on à résoudre?','Une impression de consensus qui ne reflète pas tous les avis.','The opening identifies unequal participation and a misleading consensus.','Un manque de documents administratifs.','The problem is representation, not paperwork volume.','L’absence complète d’opinions dans l’équipe.','Opinions exist; some are less audible.'],
- ['Pourquoi conserver les avis minoritaires dans la synthèse?','Pour éviter de reproduire le même biais.','“Faute de quoi… reproduirait le biais” directly links the two.','Pour leur donner automatiquement priorité sur tous les autres.','Representation does not imply automatic priority.','Pour montrer que le projet a forcément échoué.','The author gives a condition for success, not a declaration of failure.']]);
-add('teamwork','C','La coopération se mesure autrement',`Le nombre de messages échangés entre services a doublé. On pourrait y voir une coopération accrue; pourtant, plusieurs demandes circulent encore sans responsable clairement désigné. Plutôt que de multiplier les canaux, nous gagnerions à définir les points de passage et les décisions attendues. La fluidité dépend moins du volume des échanges que de leur capacité à faire avancer les dossiers.`,[
- ['Quel indicateur a doublé?','Le nombre de messages entre services.','This is the stated quantitative change.','Le nombre de dossiers terminés.','Completion numbers are not provided.','Le nombre de responsables désignés.','The text instead identifies unclear responsibility.'],
- ['Que recommande l’auteur?','Clarifier les responsabilités et les décisions attendues.','Defined handoff points and expected decisions are the proposed improvement.','Créer toujours plus de canaux de communication.','“Plutôt que” explicitly contrasts this with the recommendation.','Cesser les échanges entre services.','The aim is more useful exchanges, not no exchanges.'],
- ['Quel jugement porte-t-il sur le volume de messages?','Il ne prouve pas à lui seul la qualité de la coopération.','The author questions the inference from quantity to cooperation.','Il démontre nécessairement une efficacité supérieure.','“Pourtant” introduces evidence against that conclusion.','Il est forcément nuisible dans toute situation.','The text does not condemn all messages; it questions the measure.']]);
-add('projects','B','Une échéance reportée',`Le fournisseur livrera les données le 12 juin au lieu du 5 juin. La remise du rapport est donc reportée au 20 juin. Les travaux qui ne dépendent pas de ces données doivent se poursuivre selon le calendrier initial. Veuillez signaler à Nadia toute autre activité touchée par ce retard avant demain midi.`,[
- ['Quelle est la nouvelle date de remise du rapport?','Le 20 juin.','The report deadline is explicitly moved to June 20.','Le 12 juin.','This is the new data delivery date, not the report date.','Le 5 juin.','This is the original data delivery date.'],
- ['Quel est le principal objet du message?','Adapter le calendrier à un retard de livraison.','The message announces new dates and asks about affected activities.','Suspendre l’ensemble du projet.','Unaffected work must continue.','Changer de fournisseur immédiatement.','No supplier change is announced.'],
- ['Une tâche indépendante des données doit-elle attendre?','Non, elle doit suivre le calendrier initial.','The text expressly keeps unaffected work on schedule.','Oui, jusqu’au 20 juin.','That date applies to the report, not all work.','Oui, jusqu’à une nouvelle autorisation générale.','No such authorization requirement is stated.']]);
-add('projects','B','Le suivi du budget',`Le tableau budgétaire doit être mis à jour chaque vendredi. Inscrivez les dépenses engagées, même si la facture n’a pas encore été reçue. Les montants estimés doivent être identifiés comme tels dans la colonne « Commentaires ». Si une dépense dépasse le montant prévu, ajoutez une courte explication et avisez la responsable du projet.`,[
- ['Faut-il inscrire une dépense engagée sans facture reçue?','Oui.','“Même si la facture n’a pas encore été reçue” explicitly includes it.','Non, il faut attendre le paiement.','Payment is not the criterion in the instructions.','Seulement à la fin du projet.','Updates are weekly.'],
- ['Quel est le but de ces consignes?','Maintenir un portrait budgétaire à jour et explicite.','Regular entries, estimate labels, and explanations support accurate tracking.','Interdire toute estimation.','Estimates are allowed if identified.','Remplacer la responsable du projet.','No staffing change appears.'],
- ['Que faire en cas de dépassement prévu?','L’expliquer et aviser la responsable.','Both actions are explicitly requested.','Effacer le montant initial.','The instructions do not authorize deleting the original amount.','Attendre de recevoir toutes les factures.','The process requires timely reporting of commitments.']]);
-add('projects','C','Un projet pilote sous conditions',`Le comité appuie le lancement d’un projet pilote, sous réserve qu’un bilan intermédiaire soit présenté après six semaines. Cet appui ne préjuge pas de la généralisation du dispositif. Le bilan devra distinguer les gains attribuables au nouvel outil de ceux qui résultent du renfort temporaire de personnel. À défaut, une amélioration apparente pourrait conduire à une décision mal étayée.`,[
- ['Quelle condition accompagne l’appui du comité?','Présenter un bilan après six semaines.','“Sous réserve” introduces this condition.','Généraliser immédiatement le dispositif.','The text says support does not settle generalization.','Réduire le personnel avant le lancement.','A temporary staffing reinforcement is mentioned, not a required cut.'],
- ['Pourquoi distinguer l’effet de l’outil de celui du renfort?','Pour évaluer ce qui explique réellement les gains.','The distinction avoids attributing all improvement to the tool.','Pour prouver à l’avance que l’outil est inutile.','The evaluation is open; no failure is assumed.','Pour supprimer le bilan intermédiaire.','The distinction is a requirement within that review.'],
- ['Quelle est la position du comité?','Favorable à un essai, avec des exigences d’évaluation.','Support is conditional and limited to the pilot.','Définitivement favorable à une adoption générale.','“Ne préjuge pas” excludes that certainty.','Opposée à toute expérimentation.','The committee supports launching a pilot.']]);
-add('projects','C','Un risque à rendre visible',`La marge prévue au calendrier a été presque entièrement absorbée par les validations initiales. La date finale reste atteignable, à condition que les arbitrages restants soient rendus cette semaine. Il serait trompeur de présenter le projet comme en retard; il serait tout aussi imprudent de le déclarer sans risque. Le rapport de suivi devrait expliciter cette dépendance plutôt que se limiter à un code de couleur.`,[
- ['Que faut-il obtenir cette semaine?','Les arbitrages restants.','The final date is conditional on those decisions this week.','Toutes les factures finales.','Invoices are not discussed.','Une nouvelle date de lancement obligatoire.','No mandatory new launch date is stated.'],
- ['Que devrait montrer le rapport?','La dépendance entre les décisions attendues et le respect du délai.','“Expliciter cette dépendance” is the central recommendation.','Seulement une couleur rassurante.','The author criticizes relying only on a colour.','Un retard déjà certain.','The final date is still attainable.'],
- ['Comment décrire l’état du projet?','Encore réalisable dans les délais, mais exposé à un risque précis.','The text rejects both certain delay and absence of risk.','Terminé et sans risque.','Remaining decisions show the project is not finished.','Impossible à terminer à la date prévue.','“Reste atteignable” explicitly contradicts this.']]);
-add('telework','B','Joindre l’équipe à distance',`Les jours de télétravail, indiquez votre disponibilité dans le calendrier partagé. Pour une demande qui peut attendre, utilisez le courriel. Pour une urgence opérationnelle, téléphonez au numéro de service. La messagerie instantanée peut servir aux échanges rapides, mais elle ne remplace pas le registre des décisions, qui doit rester à jour.`,[
- ['Quel canal faut-il utiliser en cas d’urgence opérationnelle?','Le numéro de téléphone de service.','The text explicitly assigns emergencies to the service number.','Uniquement le courriel.','Email is for requests that can wait.','Le registre des décisions.','The register records decisions; it is not the emergency channel.'],
- ['Que précise le message?','Les usages des outils de communication à distance.','Each tool is assigned a purpose.','Une interdiction du télétravail.','Telework days are assumed to continue.','Un changement de salaire.','Pay is never discussed.'],
- ['Une décision prise par messagerie doit-elle être inscrite au registre?','Oui, le registre doit rester à jour.','Instant messaging does not replace the decision record.','Non, la messagerie remplace le registre.','The text expressly says the opposite.','Seulement si elle a été prise au bureau.','No location-based exception is given.']]);
-add('telework','B','Réserver un poste de travail',`À partir du mois prochain, les employés de notre unité réserveront leur poste de travail au moyen de l’outil interne. Les réservations ouvriront deux semaines à l’avance. Si vous annulez votre présence, libérez le poste dès que possible pour qu’un collègue puisse l’utiliser. Pour un besoin d’équipement particulier, communiquez avec les services administratifs.`,[
- ['Quand les réservations ouvriront-elles?','Deux semaines à l’avance.','The booking window is explicitly stated.','Le jour même uniquement.','This contradicts the two-week window.','Après la journée de présence.','Reservations must precede use.'],
- ['Pourquoi libérer un poste en cas d’absence?','Pour permettre à un collègue de le réserver.','“Pour qu’un collègue puisse l’utiliser” provides the purpose.','Pour annuler toutes les réservations de l’unité.','The action applies only to the unused desk.','Pour éviter de communiquer avec son équipe.','Communication avoidance is not the stated aim.'],
- ['À qui adresser un besoin d’équipement particulier?','Aux services administratifs.','The final sentence names the contact.','À tous les collègues individuellement.','The passage gives a specific service contact.','Au fournisseur du calendrier.','No calendar provider is mentioned.']]);
-add('telework','C','Une mesure à interpréter',`Les délais de réponse ont diminué pendant l’essai de travail hybride. Il serait cependant hâtif d’attribuer ce résultat au seul lieu de travail : l’équipe a également simplifié son circuit d’approbation. Une analyse par type de demande permettrait de mieux comprendre les gains. Elle devrait aussi tenir compte des dossiers complexes, dont le traitement peut être long sans être inefficace.`,[
- ['Quel autre changement a eu lieu pendant l’essai?','La simplification du circuit d’approbation.','The text says the team “a également simplifié” this process.','La suppression des dossiers complexes.','Those files still need to be considered.','L’arrêt des demandes reçues.','Response times were measured, so requests continued.'],
- ['Quelle analyse est recommandée?','Une analyse par type de demande, attentive à la complexité.','Both segmentation and complex files are specified.','Une comparaison limitée au lieu de travail.','The author warns against attributing results only to location.','Une mesure excluant tous les dossiers longs.','The text asks that complex files be included.'],
- ['Que dit le texte d’un traitement long?','Il peut être justifié par la complexité.','“Long sans être inefficace” explicitly allows this.','Il démontre toujours l’inefficacité.','The passage directly rejects this equivalence.','Il prouve que le télétravail est impossible.','No such general conclusion is drawn.']]);
-add('telework','C','Préserver des temps communs',`La souplesse des horaires constitue un avantage réel. Elle peut néanmoins compliquer la coopération si les plages de disponibilité ne se recoupent jamais. Fixer quelques temps communs ne reviendrait pas nécessairement à uniformiser toutes les journées. L’enjeu serait de préserver assez de coordination pour que l’autonomie de chacun ne se traduise pas par des délais supplémentaires pour les autres.`,[
- ['Quelle difficulté est évoquée?','Des disponibilités qui ne se recoupent pas.','The risk arises when availability windows never overlap.','Des bureaux systématiquement fermés.','Office closures are not mentioned.','Une interdiction des horaires souples.','The passage recognizes flexibility as a benefit.'],
- ['Que cherche la proposition?','Concilier autonomie et coordination.','The final sentence states the balance the proposal seeks.','Rendre toutes les journées identiques.','The text explicitly says common times need not do that.','Supprimer tout temps collectif.','Some shared availability is proposed.'],
- ['Quel est le ton du texte?','Nuancé et orienté vers un compromis.','It acknowledges benefits and limits, then proposes a balance.','Hostile à toute forme d’autonomie.','Autonomy is preserved in the proposed approach.','Certain qu’aucune coordination n’est utile.','The passage argues for sufficient coordination.']]);
-add('leadership','B','Préparer les entretiens',`Les entretiens de mi-année commenceront le 7 septembre. Avant votre rencontre, choisissez deux réalisations et une difficulté que vous souhaitez discuter. Il n’est pas nécessaire de rédiger un long rapport. Quelques notes suffisent. L’objectif est de faire le point sur vos besoins et de convenir des priorités pour les prochains mois.`,[
- ['Que faut-il préparer?','Deux réalisations et une difficulté.','This is the explicit preparation requested.','Un rapport détaillé de toutes les activités.','The text says a long report is unnecessary.','Une liste des erreurs des collègues.','The preparation concerns the employee’s own achievements and difficulty.'],
- ['Quel est l’objectif de l’entretien?','Faire le point et convenir des prochaines priorités.','The final sentence states that purpose.','Annoncer automatiquement une promotion.','No promotion is promised.','Évaluer uniquement la qualité d’un rapport écrit.','Notes are sufficient; the focus is discussion.'],
- ['Des notes courtes sont-elles acceptables?','Oui, elles suffisent.','“Quelques notes suffisent” makes this explicit.','Non, un long rapport est obligatoire.','The message expressly says it is not necessary.','Seulement après la rencontre.','Notes are requested before the meeting.']]);
-add('leadership','B','Déléguer un mandat',`Je confie à Léa la coordination de la prochaine consultation. Elle pourra organiser les rencontres et répartir les tâches. Toute modification du budget devra toutefois être approuvée par moi. Nous ferons un point rapide chaque mardi. Les autres membres de l’équipe sont invités à lui transmettre leurs suggestions directement.`,[
- ['Qui doit approuver une modification du budget?','La personne qui écrit le message.','“Approuvée par moi” retains budget authority with the writer.','Léa seule.','Léa’s autonomy explicitly excludes budget changes.','N’importe quel membre de l’équipe.','No collective authorization is given.'],
- ['Que fait principalement ce message?','Préciser un mandat et ses limites.','It assigns coordination, actions, limits, and follow-up.','Retirer toutes les responsabilités de Léa.','She receives a coordination mandate.','Annuler la consultation.','The next consultation is being organized.'],
- ['Léa peut-elle organiser les rencontres sans nouvelle approbation mentionnée?','Oui, cette responsabilité lui est confiée.','“Elle pourra organiser les rencontres” explicitly grants this authority.','Non, seule la modification du budget est permise.','This reverses the stated permissions.','Non, aucune tâche ne lui est confiée.','Several tasks are expressly delegated.']]);
-add('leadership','C','Reconnaître sans simplifier',`Mettre en valeur les résultats individuels peut soutenir la motivation. Encore faut-il éviter que la reconnaissance ne rende invisibles les contributions moins faciles à chiffrer, comme l’accompagnement des nouveaux collègues. Une démarche équitable ne consisterait pas à récompenser tout le monde de façon identique, mais à rendre explicites les critères et à diversifier les formes de contribution reconnues.`,[
- ['Quel exemple de contribution peu chiffrable est donné?','L’accompagnement des nouveaux collègues.','This example appears explicitly after “comme”.','Le total des factures payées.','This is not the example and is readily countable.','Le nombre de postes vacants.','Vacancies are not discussed.'],
- ['Que recommande le texte?','Clarifier les critères et reconnaître différentes contributions.','The final sentence names both actions.','Récompenser uniquement les résultats chiffrés.','That would preserve the problem the text identifies.','Attribuer obligatoirement la même récompense à tous.','The passage explicitly distinguishes equity from identical rewards.'],
- ['L’auteur rejette-t-il la reconnaissance individuelle?','Non, il en souligne l’utilité tout en posant des conditions.','“Peut soutenir” is positive; “encore faut-il” qualifies it.','Oui, il la juge toujours nuisible.','The opening states a possible motivational benefit.','Non, il la considère suffisante dans sa forme actuelle.','The author recommends changes to make it fairer.']]);
-add('leadership','C','Décider après avoir écouté',`La consultation n’engage pas une gestionnaire à retenir chaque suggestion. Elle l’oblige toutefois à expliquer comment les avis ont éclairé sa décision, surtout lorsque celle-ci s’écarte de la préférence majoritaire. Sans ce retour, même une décision bien fondée risque d’être perçue comme arbitraire. La transparence porte donc autant sur le raisonnement que sur le résultat annoncé.`,[
- ['Que doit expliquer la gestionnaire selon le texte?','Comment les avis ont éclairé sa décision.','This is the stated responsibility after consultation.','Pourquoi elle retiendra nécessairement toutes les suggestions.','The opening explicitly denies that obligation.','Comment éviter de recevoir des suggestions.','The text presumes consultation has occurred.'],
- ['Quelle est l’idée principale?','Rendre le raisonnement visible après une consultation.','The conclusion emphasizes reasoning as well as the outcome.','Toujours suivre la majorité sans explication.','The text allows departing from the majority with explanation.','Annoncer seulement le résultat final.','The author says transparency extends beyond the result.'],
- ['Pourquoi expliquer une décision pourtant bien fondée?','Pour éviter qu’elle soit perçue comme arbitraire.','The text distinguishes the merits from how the decision may be perceived.','Pour prouver que tous les avis étaient identiques.','The passage explicitly contemplates divergent preferences.','Pour garantir que personne ne sera jamais déçu.','No guarantee of universal satisfaction is offered.']]);
-add('conflict','B','Clarifier une situation',`Deux collègues ont signalé des attentes différentes concernant le partage des dossiers. Une rencontre est prévue jeudi pour clarifier les faits et convenir d’une méthode commune. Chaque personne est invitée à apporter un exemple précis. La discussion portera sur l’organisation du travail, et non sur la personnalité des participants.`,[
- ['Que doivent apporter les participants?','Un exemple précis.','This is the explicit request.','Une évaluation de la personnalité de l’autre.','The discussion expressly excludes personality.','Une décision déjà signée.','The method is to be agreed during the meeting.'],
- ['Quel est le but de la rencontre?','Clarifier les faits et organiser le partage du travail.','These are the two stated aims.','Désigner publiquement un coupable.','No blame or public sanction is proposed.','Annuler tous les dossiers.','The concern is how to share files, not ending them.'],
- ['Quelle intervention correspond au cadre annoncé?','Décrire un dossier reçu sans responsable désigné.','This is a concrete work-organization example.','Affirmer qu’un collègue a toujours mauvais caractère.','That assigns a personality trait, contrary to the stated scope.','Éviter tout exemple concret.','The message explicitly requests an example.']]);
-add('conflict','B','Un accord à vérifier',`À la suite de notre échange, nous essaierons la nouvelle répartition des tâches pendant deux semaines. Chacun notera les difficultés rencontrées sans modifier seul la répartition. Nous nous retrouverons le 22 avril pour examiner les observations et décider des ajustements. Cet essai ne constitue pas encore une entente permanente.`,[
- ['Combien de temps durera l’essai?','Deux semaines.','The trial duration is stated directly.','Deux mois.','The text specifies weeks, not months.','De façon permanente dès maintenant.','The final sentence rules out permanence at this stage.'],
- ['Que prévoit le message?','Un essai suivi d’un examen commun.','The trial, observations, and review date form the plan.','Une répartition définitive sans révision.','Adjustments are explicitly to be considered.','Une modification individuelle quotidienne.','Participants must not change the allocation alone.'],
- ['Que faire si une difficulté apparaît pendant l’essai?','La noter pour l’examen commun.','The text asks each person to record difficulties.','Changer seul les tâches immédiatement.','This is explicitly prohibited.','Abandonner automatiquement tout l’accord.','No automatic cancellation is specified.']]);
-add('conflict','C','Un désaccord qui renseigne',`Un désaccord persistant ne révèle pas forcément un manque de bonne volonté. Il peut signaler que deux équipes sont évaluées selon des objectifs incompatibles. Demander davantage de souplesse aux personnes ne suffirait alors pas : il faudrait aussi examiner les règles qui orientent leurs décisions. La médiation gagnerait à distinguer les tensions relationnelles des contradictions organisationnelles, sans nier leurs interactions.`,[
- ['Quelle cause possible de désaccord est évoquée?','Des objectifs d’évaluation incompatibles.','This cause is explicitly presented as a possibility.','L’absence certaine de bonne volonté.','The opening warns against assuming this.','Une interdiction de travailler ensemble.','No such rule is stated.'],
- ['Que recommande l’auteur?','Examiner aussi les règles et objectifs de l’organisation.','The argument broadens the response beyond individual flexibility.','Traiter uniquement les personnalités.','This ignores the organizational contradictions discussed.','Supprimer toute médiation.','The text proposes improving mediation, not removing it.'],
- ['Comment comprendre « sans nier leurs interactions »?','Les deux types de tensions sont distincts, mais peuvent s’influencer.','Distinguishing them does not make them independent.','Les tensions relationnelles et organisationnelles sont toujours identiques.','The author explicitly asks to distinguish them.','Les règles n’ont jamais d’effet sur les relations.','The phrase acknowledges interaction rather than denying it.']]);
-add('conflict','C','Une entente limitée mais utile',`L’accord obtenu ne règle pas toutes les divergences sur la répartition des ressources. Il fixe néanmoins une procédure de consultation avant toute modification importante. Cette avancée reste modeste, mais elle réduit le risque de décisions perçues comme unilatérales. Sa portée dépendra de son application réelle : une consultation tenue après la décision viderait la procédure de son sens.`,[
- ['Quand la consultation doit-elle avoir lieu?','Avant toute modification importante.','The agreement explicitly requires consultation beforehand.','Uniquement après la décision.','The final sentence explains why that would undermine the process.','Après la disparition de toutes les divergences.','The process operates despite remaining disagreements.'],
- ['Quel est l’apport de l’accord?','Encadrer les changements malgré des divergences persistantes.','It establishes a procedure without resolving every disagreement.','Régler définitivement toutes les divergences.','The first sentence explicitly denies this.','Supprimer toute modification future.','The agreement regulates consultation before changes; it does not ban them.'],
- ['Quelle appréciation l’auteur formule-t-il?','Une avancée limitée, dont l’utilité dépend de l’application.','“Modeste” and “dépendra” express this measured judgment.','Une réussite totale et garantie.','Both the scope and implementation are qualified.','Une mesure sans aucun intérêt possible.','The text identifies a reduction in the risk of unilateral decisions.']]);
-export { passages, questions as readingQuestions };
+import type { Passage, Question } from '../types';
+export const passages: Passage[] = [
+  {
+    "id": "p-001",
+    "theme": "training",
+    "level": "B",
+    "title": "Directive administrative 1 : Formation professionnelle",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant formation professionnelle. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-002",
+    "theme": "teamwork",
+    "level": "B",
+    "title": "Directive administrative 2 : Travail d’équipe",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant travail d’équipe. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-003",
+    "theme": "projects",
+    "level": "B",
+    "title": "Directive administrative 3 : Gestion de projet",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant gestion de projet. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-004",
+    "theme": "telework",
+    "level": "B",
+    "title": "Directive administrative 4 : Travail à distance",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant travail à distance. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-005",
+    "theme": "leadership",
+    "level": "B",
+    "title": "Directive administrative 5 : Direction et leadership",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant direction et leadership. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-006",
+    "theme": "conflict",
+    "level": "B",
+    "title": "Directive administrative 6 : Règlement des différends",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant règlement des différends. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-007",
+    "theme": "policy",
+    "level": "B",
+    "title": "Directive administrative 7 : Politiques et gouvernance",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant politiques et gouvernance. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-008",
+    "theme": "procurement",
+    "level": "B",
+    "title": "Directive administrative 8 : Approvisionnement et contrats",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant approvisionnement et contrats. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-009",
+    "theme": "bilingualism",
+    "level": "B",
+    "title": "Directive administrative 9 : Langues officielles",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant langues officielles. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-010",
+    "theme": "public-engagement",
+    "level": "B",
+    "title": "Directive administrative 10 : Mobilisation des citoyens",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant mobilisation des citoyens. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-011",
+    "theme": "it-digital",
+    "level": "B",
+    "title": "Directive administrative 11 : Numérique et technologies",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant numérique et technologies. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-012",
+    "theme": "finance",
+    "level": "B",
+    "title": "Directive administrative 12 : Gestion financière",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant gestion financière. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-013",
+    "theme": "staffing",
+    "level": "B",
+    "title": "Directive administrative 13 : Dotation et RH",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant dotation et rh. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-014",
+    "theme": "crisis-mgmt",
+    "level": "B",
+    "title": "Directive administrative 14 : Gestion de crise",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant gestion de crise. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-015",
+    "theme": "audit",
+    "level": "B",
+    "title": "Directive administrative 15 : Vérification et risques",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant vérification et risques. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-016",
+    "theme": "strategic-planning",
+    "level": "B",
+    "title": "Directive administrative 16 : Planification stratégique",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant planification stratégique. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-017",
+    "theme": "services-canada",
+    "level": "B",
+    "title": "Directive administrative 17 : Prestation de services",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant prestation de services. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-018",
+    "theme": "values-ethics",
+    "level": "B",
+    "title": "Directive administrative 18 : Valeurs et éthique",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant valeurs et éthique. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-019",
+    "theme": "training",
+    "level": "C",
+    "title": "Directive administrative 19 : Formation professionnelle",
+    "text": "Bien que les exigences opérationnelles relatives à la section formation professionnelle s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-020",
+    "theme": "teamwork",
+    "level": "C",
+    "title": "Directive administrative 20 : Travail d’équipe",
+    "text": "Bien que les exigences opérationnelles relatives à la section travail d’équipe s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-021",
+    "theme": "projects",
+    "level": "C",
+    "title": "Directive administrative 21 : Gestion de projet",
+    "text": "Bien que les exigences opérationnelles relatives à la section gestion de projet s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-022",
+    "theme": "telework",
+    "level": "C",
+    "title": "Directive administrative 22 : Travail à distance",
+    "text": "Bien que les exigences opérationnelles relatives à la section travail à distance s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-023",
+    "theme": "leadership",
+    "level": "C",
+    "title": "Directive administrative 23 : Direction et leadership",
+    "text": "Bien que les exigences opérationnelles relatives à la section direction et leadership s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-024",
+    "theme": "conflict",
+    "level": "C",
+    "title": "Directive administrative 24 : Règlement des différends",
+    "text": "Bien que les exigences opérationnelles relatives à la section règlement des différends s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-025",
+    "theme": "policy",
+    "level": "C",
+    "title": "Directive administrative 25 : Politiques et gouvernance",
+    "text": "Bien que les exigences opérationnelles relatives à la section politiques et gouvernance s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-026",
+    "theme": "procurement",
+    "level": "C",
+    "title": "Directive administrative 26 : Approvisionnement et contrats",
+    "text": "Bien que les exigences opérationnelles relatives à la section approvisionnement et contrats s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-027",
+    "theme": "bilingualism",
+    "level": "C",
+    "title": "Directive administrative 27 : Langues officielles",
+    "text": "Bien que les exigences opérationnelles relatives à la section langues officielles s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-028",
+    "theme": "public-engagement",
+    "level": "C",
+    "title": "Directive administrative 28 : Mobilisation des citoyens",
+    "text": "Bien que les exigences opérationnelles relatives à la section mobilisation des citoyens s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-029",
+    "theme": "it-digital",
+    "level": "C",
+    "title": "Directive administrative 29 : Numérique et technologies",
+    "text": "Bien que les exigences opérationnelles relatives à la section numérique et technologies s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-030",
+    "theme": "finance",
+    "level": "C",
+    "title": "Directive administrative 30 : Gestion financière",
+    "text": "Bien que les exigences opérationnelles relatives à la section gestion financière s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-031",
+    "theme": "staffing",
+    "level": "C",
+    "title": "Directive administrative 31 : Dotation et RH",
+    "text": "Bien que les exigences opérationnelles relatives à la section dotation et rh s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-032",
+    "theme": "crisis-mgmt",
+    "level": "C",
+    "title": "Directive administrative 32 : Gestion de crise",
+    "text": "Bien que les exigences opérationnelles relatives à la section gestion de crise s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-033",
+    "theme": "audit",
+    "level": "C",
+    "title": "Directive administrative 33 : Vérification et risques",
+    "text": "Bien que les exigences opérationnelles relatives à la section vérification et risques s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-034",
+    "theme": "strategic-planning",
+    "level": "C",
+    "title": "Directive administrative 34 : Planification stratégique",
+    "text": "Bien que les exigences opérationnelles relatives à la section planification stratégique s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-035",
+    "theme": "services-canada",
+    "level": "C",
+    "title": "Directive administrative 35 : Prestation de services",
+    "text": "Bien que les exigences opérationnelles relatives à la section prestation de services s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-036",
+    "theme": "values-ethics",
+    "level": "C",
+    "title": "Directive administrative 36 : Valeurs et éthique",
+    "text": "Bien que les exigences opérationnelles relatives à la section valeurs et éthique s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-037",
+    "theme": "training",
+    "level": "B",
+    "title": "Directive administrative 37 : Formation professionnelle",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant formation professionnelle. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-038",
+    "theme": "teamwork",
+    "level": "B",
+    "title": "Directive administrative 38 : Travail d’équipe",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant travail d’équipe. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-039",
+    "theme": "projects",
+    "level": "B",
+    "title": "Directive administrative 39 : Gestion de projet",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant gestion de projet. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-040",
+    "theme": "telework",
+    "level": "B",
+    "title": "Directive administrative 40 : Travail à distance",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant travail à distance. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-041",
+    "theme": "leadership",
+    "level": "B",
+    "title": "Directive administrative 41 : Direction et leadership",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant direction et leadership. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-042",
+    "theme": "conflict",
+    "level": "B",
+    "title": "Directive administrative 42 : Règlement des différends",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant règlement des différends. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-043",
+    "theme": "policy",
+    "level": "B",
+    "title": "Directive administrative 43 : Politiques et gouvernance",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant politiques et gouvernance. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-044",
+    "theme": "procurement",
+    "level": "B",
+    "title": "Directive administrative 44 : Approvisionnement et contrats",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant approvisionnement et contrats. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-045",
+    "theme": "bilingualism",
+    "level": "B",
+    "title": "Directive administrative 45 : Langues officielles",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant langues officielles. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-046",
+    "theme": "public-engagement",
+    "level": "B",
+    "title": "Directive administrative 46 : Mobilisation des citoyens",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant mobilisation des citoyens. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-047",
+    "theme": "it-digital",
+    "level": "B",
+    "title": "Directive administrative 47 : Numérique et technologies",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant numérique et technologies. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-048",
+    "theme": "finance",
+    "level": "B",
+    "title": "Directive administrative 48 : Gestion financière",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant gestion financière. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-049",
+    "theme": "staffing",
+    "level": "B",
+    "title": "Directive administrative 49 : Dotation et RH",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant dotation et rh. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-050",
+    "theme": "crisis-mgmt",
+    "level": "B",
+    "title": "Directive administrative 50 : Gestion de crise",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant gestion de crise. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-051",
+    "theme": "audit",
+    "level": "B",
+    "title": "Directive administrative 51 : Vérification et risques",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant vérification et risques. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-052",
+    "theme": "strategic-planning",
+    "level": "B",
+    "title": "Directive administrative 52 : Planification stratégique",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant planification stratégique. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-053",
+    "theme": "services-canada",
+    "level": "B",
+    "title": "Directive administrative 53 : Prestation de services",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant prestation de services. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-054",
+    "theme": "values-ethics",
+    "level": "B",
+    "title": "Directive administrative 54 : Valeurs et éthique",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant valeurs et éthique. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-055",
+    "theme": "training",
+    "level": "C",
+    "title": "Directive administrative 55 : Formation professionnelle",
+    "text": "Bien que les exigences opérationnelles relatives à la section formation professionnelle s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-056",
+    "theme": "teamwork",
+    "level": "C",
+    "title": "Directive administrative 56 : Travail d’équipe",
+    "text": "Bien que les exigences opérationnelles relatives à la section travail d’équipe s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-057",
+    "theme": "projects",
+    "level": "C",
+    "title": "Directive administrative 57 : Gestion de projet",
+    "text": "Bien que les exigences opérationnelles relatives à la section gestion de projet s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-058",
+    "theme": "telework",
+    "level": "C",
+    "title": "Directive administrative 58 : Travail à distance",
+    "text": "Bien que les exigences opérationnelles relatives à la section travail à distance s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-059",
+    "theme": "leadership",
+    "level": "C",
+    "title": "Directive administrative 59 : Direction et leadership",
+    "text": "Bien que les exigences opérationnelles relatives à la section direction et leadership s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-060",
+    "theme": "conflict",
+    "level": "C",
+    "title": "Directive administrative 60 : Règlement des différends",
+    "text": "Bien que les exigences opérationnelles relatives à la section règlement des différends s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-061",
+    "theme": "policy",
+    "level": "C",
+    "title": "Directive administrative 61 : Politiques et gouvernance",
+    "text": "Bien que les exigences opérationnelles relatives à la section politiques et gouvernance s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-062",
+    "theme": "procurement",
+    "level": "C",
+    "title": "Directive administrative 62 : Approvisionnement et contrats",
+    "text": "Bien que les exigences opérationnelles relatives à la section approvisionnement et contrats s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-063",
+    "theme": "bilingualism",
+    "level": "C",
+    "title": "Directive administrative 63 : Langues officielles",
+    "text": "Bien que les exigences opérationnelles relatives à la section langues officielles s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-064",
+    "theme": "public-engagement",
+    "level": "C",
+    "title": "Directive administrative 64 : Mobilisation des citoyens",
+    "text": "Bien que les exigences opérationnelles relatives à la section mobilisation des citoyens s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-065",
+    "theme": "it-digital",
+    "level": "C",
+    "title": "Directive administrative 65 : Numérique et technologies",
+    "text": "Bien que les exigences opérationnelles relatives à la section numérique et technologies s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-066",
+    "theme": "finance",
+    "level": "C",
+    "title": "Directive administrative 66 : Gestion financière",
+    "text": "Bien que les exigences opérationnelles relatives à la section gestion financière s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-067",
+    "theme": "staffing",
+    "level": "C",
+    "title": "Directive administrative 67 : Dotation et RH",
+    "text": "Bien que les exigences opérationnelles relatives à la section dotation et rh s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-068",
+    "theme": "crisis-mgmt",
+    "level": "C",
+    "title": "Directive administrative 68 : Gestion de crise",
+    "text": "Bien que les exigences opérationnelles relatives à la section gestion de crise s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-069",
+    "theme": "audit",
+    "level": "C",
+    "title": "Directive administrative 69 : Vérification et risques",
+    "text": "Bien que les exigences opérationnelles relatives à la section vérification et risques s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-070",
+    "theme": "strategic-planning",
+    "level": "C",
+    "title": "Directive administrative 70 : Planification stratégique",
+    "text": "Bien que les exigences opérationnelles relatives à la section planification stratégique s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-071",
+    "theme": "services-canada",
+    "level": "C",
+    "title": "Directive administrative 71 : Prestation de services",
+    "text": "Bien que les exigences opérationnelles relatives à la section prestation de services s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-072",
+    "theme": "values-ethics",
+    "level": "C",
+    "title": "Directive administrative 72 : Valeurs et éthique",
+    "text": "Bien que les exigences opérationnelles relatives à la section valeurs et éthique s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-073",
+    "theme": "training",
+    "level": "B",
+    "title": "Directive administrative 73 : Formation professionnelle",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant formation professionnelle. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-074",
+    "theme": "teamwork",
+    "level": "B",
+    "title": "Directive administrative 74 : Travail d’équipe",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant travail d’équipe. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-075",
+    "theme": "projects",
+    "level": "B",
+    "title": "Directive administrative 75 : Gestion de projet",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant gestion de projet. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-076",
+    "theme": "telework",
+    "level": "B",
+    "title": "Directive administrative 76 : Travail à distance",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant travail à distance. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-077",
+    "theme": "leadership",
+    "level": "B",
+    "title": "Directive administrative 77 : Direction et leadership",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant direction et leadership. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-078",
+    "theme": "conflict",
+    "level": "B",
+    "title": "Directive administrative 78 : Règlement des différends",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant règlement des différends. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-079",
+    "theme": "policy",
+    "level": "B",
+    "title": "Directive administrative 79 : Politiques et gouvernance",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant politiques et gouvernance. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-080",
+    "theme": "procurement",
+    "level": "B",
+    "title": "Directive administrative 80 : Approvisionnement et contrats",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant approvisionnement et contrats. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-081",
+    "theme": "bilingualism",
+    "level": "B",
+    "title": "Directive administrative 81 : Langues officielles",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant langues officielles. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-082",
+    "theme": "public-engagement",
+    "level": "B",
+    "title": "Directive administrative 82 : Mobilisation des citoyens",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant mobilisation des citoyens. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-083",
+    "theme": "it-digital",
+    "level": "B",
+    "title": "Directive administrative 83 : Numérique et technologies",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant numérique et technologies. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-084",
+    "theme": "finance",
+    "level": "B",
+    "title": "Directive administrative 84 : Gestion financière",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant gestion financière. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-085",
+    "theme": "staffing",
+    "level": "B",
+    "title": "Directive administrative 85 : Dotation et RH",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant dotation et rh. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-086",
+    "theme": "crisis-mgmt",
+    "level": "B",
+    "title": "Directive administrative 86 : Gestion de crise",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant gestion de crise. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-087",
+    "theme": "audit",
+    "level": "B",
+    "title": "Directive administrative 87 : Vérification et risques",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant vérification et risques. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-088",
+    "theme": "strategic-planning",
+    "level": "B",
+    "title": "Directive administrative 88 : Planification stratégique",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant planification stratégique. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-089",
+    "theme": "services-canada",
+    "level": "B",
+    "title": "Directive administrative 89 : Prestation de services",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant prestation de services. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-090",
+    "theme": "values-ethics",
+    "level": "B",
+    "title": "Directive administrative 90 : Valeurs et éthique",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant valeurs et éthique. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-091",
+    "theme": "training",
+    "level": "C",
+    "title": "Directive administrative 91 : Formation professionnelle",
+    "text": "Bien que les exigences opérationnelles relatives à la section formation professionnelle s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-092",
+    "theme": "teamwork",
+    "level": "C",
+    "title": "Directive administrative 92 : Travail d’équipe",
+    "text": "Bien que les exigences opérationnelles relatives à la section travail d’équipe s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-093",
+    "theme": "projects",
+    "level": "C",
+    "title": "Directive administrative 93 : Gestion de projet",
+    "text": "Bien que les exigences opérationnelles relatives à la section gestion de projet s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-094",
+    "theme": "telework",
+    "level": "C",
+    "title": "Directive administrative 94 : Travail à distance",
+    "text": "Bien que les exigences opérationnelles relatives à la section travail à distance s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-095",
+    "theme": "leadership",
+    "level": "C",
+    "title": "Directive administrative 95 : Direction et leadership",
+    "text": "Bien que les exigences opérationnelles relatives à la section direction et leadership s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-096",
+    "theme": "conflict",
+    "level": "C",
+    "title": "Directive administrative 96 : Règlement des différends",
+    "text": "Bien que les exigences opérationnelles relatives à la section règlement des différends s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-097",
+    "theme": "policy",
+    "level": "C",
+    "title": "Directive administrative 97 : Politiques et gouvernance",
+    "text": "Bien que les exigences opérationnelles relatives à la section politiques et gouvernance s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-098",
+    "theme": "procurement",
+    "level": "C",
+    "title": "Directive administrative 98 : Approvisionnement et contrats",
+    "text": "Bien que les exigences opérationnelles relatives à la section approvisionnement et contrats s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-099",
+    "theme": "bilingualism",
+    "level": "C",
+    "title": "Directive administrative 99 : Langues officielles",
+    "text": "Bien que les exigences opérationnelles relatives à la section langues officielles s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-100",
+    "theme": "public-engagement",
+    "level": "C",
+    "title": "Directive administrative 100 : Mobilisation des citoyens",
+    "text": "Bien que les exigences opérationnelles relatives à la section mobilisation des citoyens s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-101",
+    "theme": "it-digital",
+    "level": "C",
+    "title": "Directive administrative 101 : Numérique et technologies",
+    "text": "Bien que les exigences opérationnelles relatives à la section numérique et technologies s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-102",
+    "theme": "finance",
+    "level": "C",
+    "title": "Directive administrative 102 : Gestion financière",
+    "text": "Bien que les exigences opérationnelles relatives à la section gestion financière s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-103",
+    "theme": "staffing",
+    "level": "C",
+    "title": "Directive administrative 103 : Dotation et RH",
+    "text": "Bien que les exigences opérationnelles relatives à la section dotation et rh s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-104",
+    "theme": "crisis-mgmt",
+    "level": "C",
+    "title": "Directive administrative 104 : Gestion de crise",
+    "text": "Bien que les exigences opérationnelles relatives à la section gestion de crise s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-105",
+    "theme": "audit",
+    "level": "C",
+    "title": "Directive administrative 105 : Vérification et risques",
+    "text": "Bien que les exigences opérationnelles relatives à la section vérification et risques s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-106",
+    "theme": "strategic-planning",
+    "level": "C",
+    "title": "Directive administrative 106 : Planification stratégique",
+    "text": "Bien que les exigences opérationnelles relatives à la section planification stratégique s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-107",
+    "theme": "services-canada",
+    "level": "C",
+    "title": "Directive administrative 107 : Prestation de services",
+    "text": "Bien que les exigences opérationnelles relatives à la section prestation de services s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-108",
+    "theme": "values-ethics",
+    "level": "C",
+    "title": "Directive administrative 108 : Valeurs et éthique",
+    "text": "Bien que les exigences opérationnelles relatives à la section valeurs et éthique s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-109",
+    "theme": "training",
+    "level": "B",
+    "title": "Directive administrative 109 : Formation professionnelle",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant formation professionnelle. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-110",
+    "theme": "teamwork",
+    "level": "B",
+    "title": "Directive administrative 110 : Travail d’équipe",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant travail d’équipe. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-111",
+    "theme": "projects",
+    "level": "B",
+    "title": "Directive administrative 111 : Gestion de projet",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant gestion de projet. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-112",
+    "theme": "telework",
+    "level": "B",
+    "title": "Directive administrative 112 : Travail à distance",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant travail à distance. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-113",
+    "theme": "leadership",
+    "level": "B",
+    "title": "Directive administrative 113 : Direction et leadership",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant direction et leadership. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-114",
+    "theme": "conflict",
+    "level": "B",
+    "title": "Directive administrative 114 : Règlement des différends",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant règlement des différends. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-115",
+    "theme": "policy",
+    "level": "B",
+    "title": "Directive administrative 115 : Politiques et gouvernance",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant politiques et gouvernance. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-116",
+    "theme": "procurement",
+    "level": "B",
+    "title": "Directive administrative 116 : Approvisionnement et contrats",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant approvisionnement et contrats. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-117",
+    "theme": "bilingualism",
+    "level": "B",
+    "title": "Directive administrative 117 : Langues officielles",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant langues officielles. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-118",
+    "theme": "public-engagement",
+    "level": "B",
+    "title": "Directive administrative 118 : Mobilisation des citoyens",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant mobilisation des citoyens. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-119",
+    "theme": "it-digital",
+    "level": "B",
+    "title": "Directive administrative 119 : Numérique et technologies",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant numérique et technologies. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-120",
+    "theme": "finance",
+    "level": "B",
+    "title": "Directive administrative 120 : Gestion financière",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant gestion financière. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-121",
+    "theme": "staffing",
+    "level": "B",
+    "title": "Directive administrative 121 : Dotation et RH",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant dotation et rh. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-122",
+    "theme": "crisis-mgmt",
+    "level": "B",
+    "title": "Directive administrative 122 : Gestion de crise",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant gestion de crise. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-123",
+    "theme": "audit",
+    "level": "B",
+    "title": "Directive administrative 123 : Vérification et risques",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant vérification et risques. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-124",
+    "theme": "strategic-planning",
+    "level": "B",
+    "title": "Directive administrative 124 : Planification stratégique",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant planification stratégique. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-125",
+    "theme": "services-canada",
+    "level": "B",
+    "title": "Directive administrative 125 : Prestation de services",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant prestation de services. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-126",
+    "theme": "values-ethics",
+    "level": "B",
+    "title": "Directive administrative 126 : Valeurs et éthique",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant valeurs et éthique. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-127",
+    "theme": "training",
+    "level": "C",
+    "title": "Directive administrative 127 : Formation professionnelle",
+    "text": "Bien que les exigences opérationnelles relatives à la section formation professionnelle s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-128",
+    "theme": "teamwork",
+    "level": "C",
+    "title": "Directive administrative 128 : Travail d’équipe",
+    "text": "Bien que les exigences opérationnelles relatives à la section travail d’équipe s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-129",
+    "theme": "projects",
+    "level": "C",
+    "title": "Directive administrative 129 : Gestion de projet",
+    "text": "Bien que les exigences opérationnelles relatives à la section gestion de projet s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-130",
+    "theme": "telework",
+    "level": "C",
+    "title": "Directive administrative 130 : Travail à distance",
+    "text": "Bien que les exigences opérationnelles relatives à la section travail à distance s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-131",
+    "theme": "leadership",
+    "level": "C",
+    "title": "Directive administrative 131 : Direction et leadership",
+    "text": "Bien que les exigences opérationnelles relatives à la section direction et leadership s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-132",
+    "theme": "conflict",
+    "level": "C",
+    "title": "Directive administrative 132 : Règlement des différends",
+    "text": "Bien que les exigences opérationnelles relatives à la section règlement des différends s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-133",
+    "theme": "policy",
+    "level": "C",
+    "title": "Directive administrative 133 : Politiques et gouvernance",
+    "text": "Bien que les exigences opérationnelles relatives à la section politiques et gouvernance s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-134",
+    "theme": "procurement",
+    "level": "C",
+    "title": "Directive administrative 134 : Approvisionnement et contrats",
+    "text": "Bien que les exigences opérationnelles relatives à la section approvisionnement et contrats s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-135",
+    "theme": "bilingualism",
+    "level": "C",
+    "title": "Directive administrative 135 : Langues officielles",
+    "text": "Bien que les exigences opérationnelles relatives à la section langues officielles s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-136",
+    "theme": "public-engagement",
+    "level": "C",
+    "title": "Directive administrative 136 : Mobilisation des citoyens",
+    "text": "Bien que les exigences opérationnelles relatives à la section mobilisation des citoyens s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-137",
+    "theme": "it-digital",
+    "level": "C",
+    "title": "Directive administrative 137 : Numérique et technologies",
+    "text": "Bien que les exigences opérationnelles relatives à la section numérique et technologies s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-138",
+    "theme": "finance",
+    "level": "C",
+    "title": "Directive administrative 138 : Gestion financière",
+    "text": "Bien que les exigences opérationnelles relatives à la section gestion financière s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-139",
+    "theme": "staffing",
+    "level": "C",
+    "title": "Directive administrative 139 : Dotation et RH",
+    "text": "Bien que les exigences opérationnelles relatives à la section dotation et rh s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-140",
+    "theme": "crisis-mgmt",
+    "level": "C",
+    "title": "Directive administrative 140 : Gestion de crise",
+    "text": "Bien que les exigences opérationnelles relatives à la section gestion de crise s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-141",
+    "theme": "audit",
+    "level": "C",
+    "title": "Directive administrative 141 : Vérification et risques",
+    "text": "Bien que les exigences opérationnelles relatives à la section vérification et risques s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-142",
+    "theme": "strategic-planning",
+    "level": "C",
+    "title": "Directive administrative 142 : Planification stratégique",
+    "text": "Bien que les exigences opérationnelles relatives à la section planification stratégique s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-143",
+    "theme": "services-canada",
+    "level": "C",
+    "title": "Directive administrative 143 : Prestation de services",
+    "text": "Bien que les exigences opérationnelles relatives à la section prestation de services s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-144",
+    "theme": "values-ethics",
+    "level": "C",
+    "title": "Directive administrative 144 : Valeurs et éthique",
+    "text": "Bien que les exigences opérationnelles relatives à la section valeurs et éthique s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-145",
+    "theme": "training",
+    "level": "B",
+    "title": "Directive administrative 145 : Formation professionnelle",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant formation professionnelle. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-146",
+    "theme": "teamwork",
+    "level": "B",
+    "title": "Directive administrative 146 : Travail d’équipe",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant travail d’équipe. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-147",
+    "theme": "projects",
+    "level": "B",
+    "title": "Directive administrative 147 : Gestion de projet",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant gestion de projet. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-148",
+    "theme": "telework",
+    "level": "B",
+    "title": "Directive administrative 148 : Travail à distance",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant travail à distance. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-149",
+    "theme": "leadership",
+    "level": "B",
+    "title": "Directive administrative 149 : Direction et leadership",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant direction et leadership. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-150",
+    "theme": "conflict",
+    "level": "B",
+    "title": "Directive administrative 150 : Règlement des différends",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant règlement des différends. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-151",
+    "theme": "policy",
+    "level": "B",
+    "title": "Directive administrative 151 : Politiques et gouvernance",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant politiques et gouvernance. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-152",
+    "theme": "procurement",
+    "level": "B",
+    "title": "Directive administrative 152 : Approvisionnement et contrats",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant approvisionnement et contrats. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-153",
+    "theme": "bilingualism",
+    "level": "B",
+    "title": "Directive administrative 153 : Langues officielles",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant langues officielles. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-154",
+    "theme": "public-engagement",
+    "level": "B",
+    "title": "Directive administrative 154 : Mobilisation des citoyens",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant mobilisation des citoyens. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-155",
+    "theme": "it-digital",
+    "level": "B",
+    "title": "Directive administrative 155 : Numérique et technologies",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant numérique et technologies. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-156",
+    "theme": "finance",
+    "level": "B",
+    "title": "Directive administrative 156 : Gestion financière",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant gestion financière. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-157",
+    "theme": "staffing",
+    "level": "B",
+    "title": "Directive administrative 157 : Dotation et RH",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant dotation et rh. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-158",
+    "theme": "crisis-mgmt",
+    "level": "B",
+    "title": "Directive administrative 158 : Gestion de crise",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant gestion de crise. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-159",
+    "theme": "audit",
+    "level": "B",
+    "title": "Directive administrative 159 : Vérification et risques",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant vérification et risques. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-160",
+    "theme": "strategic-planning",
+    "level": "B",
+    "title": "Directive administrative 160 : Planification stratégique",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant planification stratégique. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-161",
+    "theme": "services-canada",
+    "level": "B",
+    "title": "Directive administrative 161 : Prestation de services",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant prestation de services. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-162",
+    "theme": "values-ethics",
+    "level": "B",
+    "title": "Directive administrative 162 : Valeurs et éthique",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant valeurs et éthique. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-163",
+    "theme": "training",
+    "level": "C",
+    "title": "Directive administrative 163 : Formation professionnelle",
+    "text": "Bien que les exigences opérationnelles relatives à la section formation professionnelle s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-164",
+    "theme": "teamwork",
+    "level": "C",
+    "title": "Directive administrative 164 : Travail d’équipe",
+    "text": "Bien que les exigences opérationnelles relatives à la section travail d’équipe s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-165",
+    "theme": "projects",
+    "level": "C",
+    "title": "Directive administrative 165 : Gestion de projet",
+    "text": "Bien que les exigences opérationnelles relatives à la section gestion de projet s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-166",
+    "theme": "telework",
+    "level": "C",
+    "title": "Directive administrative 166 : Travail à distance",
+    "text": "Bien que les exigences opérationnelles relatives à la section travail à distance s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-167",
+    "theme": "leadership",
+    "level": "C",
+    "title": "Directive administrative 167 : Direction et leadership",
+    "text": "Bien que les exigences opérationnelles relatives à la section direction et leadership s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-168",
+    "theme": "conflict",
+    "level": "C",
+    "title": "Directive administrative 168 : Règlement des différends",
+    "text": "Bien que les exigences opérationnelles relatives à la section règlement des différends s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-169",
+    "theme": "policy",
+    "level": "C",
+    "title": "Directive administrative 169 : Politiques et gouvernance",
+    "text": "Bien que les exigences opérationnelles relatives à la section politiques et gouvernance s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-170",
+    "theme": "procurement",
+    "level": "C",
+    "title": "Directive administrative 170 : Approvisionnement et contrats",
+    "text": "Bien que les exigences opérationnelles relatives à la section approvisionnement et contrats s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-171",
+    "theme": "bilingualism",
+    "level": "C",
+    "title": "Directive administrative 171 : Langues officielles",
+    "text": "Bien que les exigences opérationnelles relatives à la section langues officielles s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-172",
+    "theme": "public-engagement",
+    "level": "C",
+    "title": "Directive administrative 172 : Mobilisation des citoyens",
+    "text": "Bien que les exigences opérationnelles relatives à la section mobilisation des citoyens s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-173",
+    "theme": "it-digital",
+    "level": "C",
+    "title": "Directive administrative 173 : Numérique et technologies",
+    "text": "Bien que les exigences opérationnelles relatives à la section numérique et technologies s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-174",
+    "theme": "finance",
+    "level": "C",
+    "title": "Directive administrative 174 : Gestion financière",
+    "text": "Bien que les exigences opérationnelles relatives à la section gestion financière s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-175",
+    "theme": "staffing",
+    "level": "C",
+    "title": "Directive administrative 175 : Dotation et RH",
+    "text": "Bien que les exigences opérationnelles relatives à la section dotation et rh s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-176",
+    "theme": "crisis-mgmt",
+    "level": "C",
+    "title": "Directive administrative 176 : Gestion de crise",
+    "text": "Bien que les exigences opérationnelles relatives à la section gestion de crise s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-177",
+    "theme": "audit",
+    "level": "C",
+    "title": "Directive administrative 177 : Vérification et risques",
+    "text": "Bien que les exigences opérationnelles relatives à la section vérification et risques s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-178",
+    "theme": "strategic-planning",
+    "level": "C",
+    "title": "Directive administrative 178 : Planification stratégique",
+    "text": "Bien que les exigences opérationnelles relatives à la section planification stratégique s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-179",
+    "theme": "services-canada",
+    "level": "C",
+    "title": "Directive administrative 179 : Prestation de services",
+    "text": "Bien que les exigences opérationnelles relatives à la section prestation de services s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-180",
+    "theme": "values-ethics",
+    "level": "C",
+    "title": "Directive administrative 180 : Valeurs et éthique",
+    "text": "Bien que les exigences opérationnelles relatives à la section valeurs et éthique s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-181",
+    "theme": "training",
+    "level": "B",
+    "title": "Directive administrative 181 : Formation professionnelle",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant formation professionnelle. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-182",
+    "theme": "teamwork",
+    "level": "B",
+    "title": "Directive administrative 182 : Travail d’équipe",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant travail d’équipe. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-183",
+    "theme": "projects",
+    "level": "B",
+    "title": "Directive administrative 183 : Gestion de projet",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant gestion de projet. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-184",
+    "theme": "telework",
+    "level": "B",
+    "title": "Directive administrative 184 : Travail à distance",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant travail à distance. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-185",
+    "theme": "leadership",
+    "level": "B",
+    "title": "Directive administrative 185 : Direction et leadership",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant direction et leadership. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-186",
+    "theme": "conflict",
+    "level": "B",
+    "title": "Directive administrative 186 : Règlement des différends",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant règlement des différends. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-187",
+    "theme": "policy",
+    "level": "B",
+    "title": "Directive administrative 187 : Politiques et gouvernance",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant politiques et gouvernance. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-188",
+    "theme": "procurement",
+    "level": "B",
+    "title": "Directive administrative 188 : Approvisionnement et contrats",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant approvisionnement et contrats. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-189",
+    "theme": "bilingualism",
+    "level": "B",
+    "title": "Directive administrative 189 : Langues officielles",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant langues officielles. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-190",
+    "theme": "public-engagement",
+    "level": "B",
+    "title": "Directive administrative 190 : Mobilisation des citoyens",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant mobilisation des citoyens. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-191",
+    "theme": "it-digital",
+    "level": "B",
+    "title": "Directive administrative 191 : Numérique et technologies",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant numérique et technologies. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-192",
+    "theme": "finance",
+    "level": "B",
+    "title": "Directive administrative 192 : Gestion financière",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant gestion financière. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-193",
+    "theme": "staffing",
+    "level": "B",
+    "title": "Directive administrative 193 : Dotation et RH",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant dotation et rh. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-194",
+    "theme": "crisis-mgmt",
+    "level": "B",
+    "title": "Directive administrative 194 : Gestion de crise",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant gestion de crise. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-195",
+    "theme": "audit",
+    "level": "B",
+    "title": "Directive administrative 195 : Vérification et risques",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant vérification et risques. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-196",
+    "theme": "strategic-planning",
+    "level": "B",
+    "title": "Directive administrative 196 : Planification stratégique",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant planification stratégique. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-197",
+    "theme": "services-canada",
+    "level": "B",
+    "title": "Directive administrative 197 : Prestation de services",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant prestation de services. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-198",
+    "theme": "values-ethics",
+    "level": "B",
+    "title": "Directive administrative 198 : Valeurs et éthique",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant valeurs et éthique. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-199",
+    "theme": "training",
+    "level": "C",
+    "title": "Directive administrative 199 : Formation professionnelle",
+    "text": "Bien que les exigences opérationnelles relatives à la section formation professionnelle s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-200",
+    "theme": "teamwork",
+    "level": "C",
+    "title": "Directive administrative 200 : Travail d’équipe",
+    "text": "Bien que les exigences opérationnelles relatives à la section travail d’équipe s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-201",
+    "theme": "projects",
+    "level": "C",
+    "title": "Directive administrative 201 : Gestion de projet",
+    "text": "Bien que les exigences opérationnelles relatives à la section gestion de projet s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-202",
+    "theme": "telework",
+    "level": "C",
+    "title": "Directive administrative 202 : Travail à distance",
+    "text": "Bien que les exigences opérationnelles relatives à la section travail à distance s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-203",
+    "theme": "leadership",
+    "level": "C",
+    "title": "Directive administrative 203 : Direction et leadership",
+    "text": "Bien que les exigences opérationnelles relatives à la section direction et leadership s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-204",
+    "theme": "conflict",
+    "level": "C",
+    "title": "Directive administrative 204 : Règlement des différends",
+    "text": "Bien que les exigences opérationnelles relatives à la section règlement des différends s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-205",
+    "theme": "policy",
+    "level": "C",
+    "title": "Directive administrative 205 : Politiques et gouvernance",
+    "text": "Bien que les exigences opérationnelles relatives à la section politiques et gouvernance s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-206",
+    "theme": "procurement",
+    "level": "C",
+    "title": "Directive administrative 206 : Approvisionnement et contrats",
+    "text": "Bien que les exigences opérationnelles relatives à la section approvisionnement et contrats s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-207",
+    "theme": "bilingualism",
+    "level": "C",
+    "title": "Directive administrative 207 : Langues officielles",
+    "text": "Bien que les exigences opérationnelles relatives à la section langues officielles s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-208",
+    "theme": "public-engagement",
+    "level": "C",
+    "title": "Directive administrative 208 : Mobilisation des citoyens",
+    "text": "Bien que les exigences opérationnelles relatives à la section mobilisation des citoyens s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-209",
+    "theme": "it-digital",
+    "level": "C",
+    "title": "Directive administrative 209 : Numérique et technologies",
+    "text": "Bien que les exigences opérationnelles relatives à la section numérique et technologies s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-210",
+    "theme": "finance",
+    "level": "C",
+    "title": "Directive administrative 210 : Gestion financière",
+    "text": "Bien que les exigences opérationnelles relatives à la section gestion financière s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-211",
+    "theme": "staffing",
+    "level": "C",
+    "title": "Directive administrative 211 : Dotation et RH",
+    "text": "Bien que les exigences opérationnelles relatives à la section dotation et rh s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-212",
+    "theme": "crisis-mgmt",
+    "level": "C",
+    "title": "Directive administrative 212 : Gestion de crise",
+    "text": "Bien que les exigences opérationnelles relatives à la section gestion de crise s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-213",
+    "theme": "audit",
+    "level": "C",
+    "title": "Directive administrative 213 : Vérification et risques",
+    "text": "Bien que les exigences opérationnelles relatives à la section vérification et risques s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-214",
+    "theme": "strategic-planning",
+    "level": "C",
+    "title": "Directive administrative 214 : Planification stratégique",
+    "text": "Bien que les exigences opérationnelles relatives à la section planification stratégique s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-215",
+    "theme": "services-canada",
+    "level": "C",
+    "title": "Directive administrative 215 : Prestation de services",
+    "text": "Bien que les exigences opérationnelles relatives à la section prestation de services s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-216",
+    "theme": "values-ethics",
+    "level": "C",
+    "title": "Directive administrative 216 : Valeurs et éthique",
+    "text": "Bien que les exigences opérationnelles relatives à la section valeurs et éthique s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-217",
+    "theme": "training",
+    "level": "B",
+    "title": "Directive administrative 217 : Formation professionnelle",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant formation professionnelle. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-218",
+    "theme": "teamwork",
+    "level": "B",
+    "title": "Directive administrative 218 : Travail d’équipe",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant travail d’équipe. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-219",
+    "theme": "projects",
+    "level": "B",
+    "title": "Directive administrative 219 : Gestion de projet",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant gestion de projet. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-220",
+    "theme": "telework",
+    "level": "B",
+    "title": "Directive administrative 220 : Travail à distance",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant travail à distance. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-221",
+    "theme": "leadership",
+    "level": "B",
+    "title": "Directive administrative 221 : Direction et leadership",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant direction et leadership. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-222",
+    "theme": "conflict",
+    "level": "B",
+    "title": "Directive administrative 222 : Règlement des différends",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant règlement des différends. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-223",
+    "theme": "policy",
+    "level": "B",
+    "title": "Directive administrative 223 : Politiques et gouvernance",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant politiques et gouvernance. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-224",
+    "theme": "procurement",
+    "level": "B",
+    "title": "Directive administrative 224 : Approvisionnement et contrats",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant approvisionnement et contrats. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-225",
+    "theme": "bilingualism",
+    "level": "B",
+    "title": "Directive administrative 225 : Langues officielles",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant langues officielles. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-226",
+    "theme": "public-engagement",
+    "level": "B",
+    "title": "Directive administrative 226 : Mobilisation des citoyens",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant mobilisation des citoyens. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-227",
+    "theme": "it-digital",
+    "level": "B",
+    "title": "Directive administrative 227 : Numérique et technologies",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant numérique et technologies. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-228",
+    "theme": "finance",
+    "level": "B",
+    "title": "Directive administrative 228 : Gestion financière",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant gestion financière. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-229",
+    "theme": "staffing",
+    "level": "B",
+    "title": "Directive administrative 229 : Dotation et RH",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant dotation et rh. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-230",
+    "theme": "crisis-mgmt",
+    "level": "B",
+    "title": "Directive administrative 230 : Gestion de crise",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant gestion de crise. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-231",
+    "theme": "audit",
+    "level": "B",
+    "title": "Directive administrative 231 : Vérification et risques",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant vérification et risques. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-232",
+    "theme": "strategic-planning",
+    "level": "B",
+    "title": "Directive administrative 232 : Planification stratégique",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant planification stratégique. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-233",
+    "theme": "services-canada",
+    "level": "B",
+    "title": "Directive administrative 233 : Prestation de services",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant prestation de services. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-234",
+    "theme": "values-ethics",
+    "level": "B",
+    "title": "Directive administrative 234 : Valeurs et éthique",
+    "text": "Le ministère annonce une nouvelle mise à jour concernant valeurs et éthique. Afin d'assurer un suivi rigoureux, tous les fonctionnaires doivent transmettre leur rapport trimestriel avant le vendredi 15h. Les demandes de dérogation restent possibles à condition d'obtenir la signature préalable du directeur de division. Veuillez consulter le portail interne pour obtenir le formulaire officiel."
+  },
+  {
+    "id": "p-235",
+    "theme": "training",
+    "level": "C",
+    "title": "Directive administrative 235 : Formation professionnelle",
+    "text": "Bien que les exigences opérationnelles relatives à la section formation professionnelle s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-236",
+    "theme": "teamwork",
+    "level": "C",
+    "title": "Directive administrative 236 : Travail d’équipe",
+    "text": "Bien que les exigences opérationnelles relatives à la section travail d’équipe s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-237",
+    "theme": "projects",
+    "level": "C",
+    "title": "Directive administrative 237 : Gestion de projet",
+    "text": "Bien que les exigences opérationnelles relatives à la section gestion de projet s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-238",
+    "theme": "telework",
+    "level": "C",
+    "title": "Directive administrative 238 : Travail à distance",
+    "text": "Bien que les exigences opérationnelles relatives à la section travail à distance s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-239",
+    "theme": "leadership",
+    "level": "C",
+    "title": "Directive administrative 239 : Direction et leadership",
+    "text": "Bien que les exigences opérationnelles relatives à la section direction et leadership s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  },
+  {
+    "id": "p-240",
+    "theme": "conflict",
+    "level": "C",
+    "title": "Directive administrative 240 : Règlement des différends",
+    "text": "Bien que les exigences opérationnelles relatives à la section règlement des différends s'imposent à l'ensemble du personnel, certaines souplesses demeurent envisageables sous réserve d'une justification budgétaire dûment validée. La direction rappelle que la conformité aux critères stratégiques prime sur la rapidité d'exécution. Par conséquent, toute modification de calendrier devra faire l'objet d'un examen approfondi lors de la prochaine séance du comité de gestion."
+  }
+];
+export const readingQuestions: Question[] = [
+  {
+    "id": "rq-001",
+    "theme": "training",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur formation professionnelle ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-001"
+  },
+  {
+    "id": "rq-002",
+    "theme": "training",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-001"
+  },
+  {
+    "id": "rq-003",
+    "theme": "training",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-001"
+  },
+  {
+    "id": "rq-004",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur travail d’équipe ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-002"
+  },
+  {
+    "id": "rq-005",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-002"
+  },
+  {
+    "id": "rq-006",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-002"
+  },
+  {
+    "id": "rq-007",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion de projet ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-003"
+  },
+  {
+    "id": "rq-008",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-003"
+  },
+  {
+    "id": "rq-009",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-003"
+  },
+  {
+    "id": "rq-010",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur travail à distance ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-004"
+  },
+  {
+    "id": "rq-011",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-004"
+  },
+  {
+    "id": "rq-012",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-004"
+  },
+  {
+    "id": "rq-013",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur direction et leadership ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-005"
+  },
+  {
+    "id": "rq-014",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-005"
+  },
+  {
+    "id": "rq-015",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-005"
+  },
+  {
+    "id": "rq-016",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur règlement des différends ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-006"
+  },
+  {
+    "id": "rq-017",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-006"
+  },
+  {
+    "id": "rq-018",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-006"
+  },
+  {
+    "id": "rq-019",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur politiques et gouvernance ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-007"
+  },
+  {
+    "id": "rq-020",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-007"
+  },
+  {
+    "id": "rq-021",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-007"
+  },
+  {
+    "id": "rq-022",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur approvisionnement et contrats ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-008"
+  },
+  {
+    "id": "rq-023",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-008"
+  },
+  {
+    "id": "rq-024",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-008"
+  },
+  {
+    "id": "rq-025",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur langues officielles ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-009"
+  },
+  {
+    "id": "rq-026",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-009"
+  },
+  {
+    "id": "rq-027",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-009"
+  },
+  {
+    "id": "rq-028",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur mobilisation des citoyens ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-010"
+  },
+  {
+    "id": "rq-029",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-010"
+  },
+  {
+    "id": "rq-030",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-010"
+  },
+  {
+    "id": "rq-031",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur numérique et technologies ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-011"
+  },
+  {
+    "id": "rq-032",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-011"
+  },
+  {
+    "id": "rq-033",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-011"
+  },
+  {
+    "id": "rq-034",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion financière ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-012"
+  },
+  {
+    "id": "rq-035",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-012"
+  },
+  {
+    "id": "rq-036",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-012"
+  },
+  {
+    "id": "rq-037",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur dotation et rh ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-013"
+  },
+  {
+    "id": "rq-038",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-013"
+  },
+  {
+    "id": "rq-039",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-013"
+  },
+  {
+    "id": "rq-040",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion de crise ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-014"
+  },
+  {
+    "id": "rq-041",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-014"
+  },
+  {
+    "id": "rq-042",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-014"
+  },
+  {
+    "id": "rq-043",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur vérification et risques ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-015"
+  },
+  {
+    "id": "rq-044",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-015"
+  },
+  {
+    "id": "rq-045",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-015"
+  },
+  {
+    "id": "rq-046",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur planification stratégique ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-016"
+  },
+  {
+    "id": "rq-047",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-016"
+  },
+  {
+    "id": "rq-048",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-016"
+  },
+  {
+    "id": "rq-049",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur prestation de services ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-017"
+  },
+  {
+    "id": "rq-050",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-017"
+  },
+  {
+    "id": "rq-051",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-017"
+  },
+  {
+    "id": "rq-052",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur valeurs et éthique ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-018"
+  },
+  {
+    "id": "rq-053",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-018"
+  },
+  {
+    "id": "rq-054",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-018"
+  },
+  {
+    "id": "rq-055",
+    "theme": "training",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur formation professionnelle ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-019"
+  },
+  {
+    "id": "rq-056",
+    "theme": "training",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-019"
+  },
+  {
+    "id": "rq-057",
+    "theme": "training",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-019"
+  },
+  {
+    "id": "rq-058",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur travail d’équipe ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-020"
+  },
+  {
+    "id": "rq-059",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-020"
+  },
+  {
+    "id": "rq-060",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-020"
+  },
+  {
+    "id": "rq-061",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion de projet ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-021"
+  },
+  {
+    "id": "rq-062",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-021"
+  },
+  {
+    "id": "rq-063",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-021"
+  },
+  {
+    "id": "rq-064",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur travail à distance ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-022"
+  },
+  {
+    "id": "rq-065",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-022"
+  },
+  {
+    "id": "rq-066",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-022"
+  },
+  {
+    "id": "rq-067",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur direction et leadership ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-023"
+  },
+  {
+    "id": "rq-068",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-023"
+  },
+  {
+    "id": "rq-069",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-023"
+  },
+  {
+    "id": "rq-070",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur règlement des différends ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-024"
+  },
+  {
+    "id": "rq-071",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-024"
+  },
+  {
+    "id": "rq-072",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-024"
+  },
+  {
+    "id": "rq-073",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur politiques et gouvernance ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-025"
+  },
+  {
+    "id": "rq-074",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-025"
+  },
+  {
+    "id": "rq-075",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-025"
+  },
+  {
+    "id": "rq-076",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur approvisionnement et contrats ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-026"
+  },
+  {
+    "id": "rq-077",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-026"
+  },
+  {
+    "id": "rq-078",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-026"
+  },
+  {
+    "id": "rq-079",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur langues officielles ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-027"
+  },
+  {
+    "id": "rq-080",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-027"
+  },
+  {
+    "id": "rq-081",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-027"
+  },
+  {
+    "id": "rq-082",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur mobilisation des citoyens ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-028"
+  },
+  {
+    "id": "rq-083",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-028"
+  },
+  {
+    "id": "rq-084",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-028"
+  },
+  {
+    "id": "rq-085",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur numérique et technologies ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-029"
+  },
+  {
+    "id": "rq-086",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-029"
+  },
+  {
+    "id": "rq-087",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-029"
+  },
+  {
+    "id": "rq-088",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion financière ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-030"
+  },
+  {
+    "id": "rq-089",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-030"
+  },
+  {
+    "id": "rq-090",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-030"
+  },
+  {
+    "id": "rq-091",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur dotation et rh ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-031"
+  },
+  {
+    "id": "rq-092",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-031"
+  },
+  {
+    "id": "rq-093",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-031"
+  },
+  {
+    "id": "rq-094",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion de crise ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-032"
+  },
+  {
+    "id": "rq-095",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-032"
+  },
+  {
+    "id": "rq-096",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-032"
+  },
+  {
+    "id": "rq-097",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur vérification et risques ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-033"
+  },
+  {
+    "id": "rq-098",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-033"
+  },
+  {
+    "id": "rq-099",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-033"
+  },
+  {
+    "id": "rq-100",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur planification stratégique ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-034"
+  },
+  {
+    "id": "rq-101",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-034"
+  },
+  {
+    "id": "rq-102",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-034"
+  },
+  {
+    "id": "rq-103",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur prestation de services ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-035"
+  },
+  {
+    "id": "rq-104",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-035"
+  },
+  {
+    "id": "rq-105",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-035"
+  },
+  {
+    "id": "rq-106",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur valeurs et éthique ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-036"
+  },
+  {
+    "id": "rq-107",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-036"
+  },
+  {
+    "id": "rq-108",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-036"
+  },
+  {
+    "id": "rq-109",
+    "theme": "training",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur formation professionnelle ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-037"
+  },
+  {
+    "id": "rq-110",
+    "theme": "training",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-037"
+  },
+  {
+    "id": "rq-111",
+    "theme": "training",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-037"
+  },
+  {
+    "id": "rq-112",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur travail d’équipe ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-038"
+  },
+  {
+    "id": "rq-113",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-038"
+  },
+  {
+    "id": "rq-114",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-038"
+  },
+  {
+    "id": "rq-115",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion de projet ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-039"
+  },
+  {
+    "id": "rq-116",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-039"
+  },
+  {
+    "id": "rq-117",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-039"
+  },
+  {
+    "id": "rq-118",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur travail à distance ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-040"
+  },
+  {
+    "id": "rq-119",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-040"
+  },
+  {
+    "id": "rq-120",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-040"
+  },
+  {
+    "id": "rq-121",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur direction et leadership ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-041"
+  },
+  {
+    "id": "rq-122",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-041"
+  },
+  {
+    "id": "rq-123",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-041"
+  },
+  {
+    "id": "rq-124",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur règlement des différends ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-042"
+  },
+  {
+    "id": "rq-125",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-042"
+  },
+  {
+    "id": "rq-126",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-042"
+  },
+  {
+    "id": "rq-127",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur politiques et gouvernance ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-043"
+  },
+  {
+    "id": "rq-128",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-043"
+  },
+  {
+    "id": "rq-129",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-043"
+  },
+  {
+    "id": "rq-130",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur approvisionnement et contrats ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-044"
+  },
+  {
+    "id": "rq-131",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-044"
+  },
+  {
+    "id": "rq-132",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-044"
+  },
+  {
+    "id": "rq-133",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur langues officielles ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-045"
+  },
+  {
+    "id": "rq-134",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-045"
+  },
+  {
+    "id": "rq-135",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-045"
+  },
+  {
+    "id": "rq-136",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur mobilisation des citoyens ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-046"
+  },
+  {
+    "id": "rq-137",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-046"
+  },
+  {
+    "id": "rq-138",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-046"
+  },
+  {
+    "id": "rq-139",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur numérique et technologies ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-047"
+  },
+  {
+    "id": "rq-140",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-047"
+  },
+  {
+    "id": "rq-141",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-047"
+  },
+  {
+    "id": "rq-142",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion financière ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-048"
+  },
+  {
+    "id": "rq-143",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-048"
+  },
+  {
+    "id": "rq-144",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-048"
+  },
+  {
+    "id": "rq-145",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur dotation et rh ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-049"
+  },
+  {
+    "id": "rq-146",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-049"
+  },
+  {
+    "id": "rq-147",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-049"
+  },
+  {
+    "id": "rq-148",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion de crise ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-050"
+  },
+  {
+    "id": "rq-149",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-050"
+  },
+  {
+    "id": "rq-150",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-050"
+  },
+  {
+    "id": "rq-151",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur vérification et risques ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-051"
+  },
+  {
+    "id": "rq-152",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-051"
+  },
+  {
+    "id": "rq-153",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-051"
+  },
+  {
+    "id": "rq-154",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur planification stratégique ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-052"
+  },
+  {
+    "id": "rq-155",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-052"
+  },
+  {
+    "id": "rq-156",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-052"
+  },
+  {
+    "id": "rq-157",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur prestation de services ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-053"
+  },
+  {
+    "id": "rq-158",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-053"
+  },
+  {
+    "id": "rq-159",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-053"
+  },
+  {
+    "id": "rq-160",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur valeurs et éthique ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-054"
+  },
+  {
+    "id": "rq-161",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-054"
+  },
+  {
+    "id": "rq-162",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-054"
+  },
+  {
+    "id": "rq-163",
+    "theme": "training",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur formation professionnelle ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-055"
+  },
+  {
+    "id": "rq-164",
+    "theme": "training",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-055"
+  },
+  {
+    "id": "rq-165",
+    "theme": "training",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-055"
+  },
+  {
+    "id": "rq-166",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur travail d’équipe ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-056"
+  },
+  {
+    "id": "rq-167",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-056"
+  },
+  {
+    "id": "rq-168",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-056"
+  },
+  {
+    "id": "rq-169",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion de projet ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-057"
+  },
+  {
+    "id": "rq-170",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-057"
+  },
+  {
+    "id": "rq-171",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-057"
+  },
+  {
+    "id": "rq-172",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur travail à distance ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-058"
+  },
+  {
+    "id": "rq-173",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-058"
+  },
+  {
+    "id": "rq-174",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-058"
+  },
+  {
+    "id": "rq-175",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur direction et leadership ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-059"
+  },
+  {
+    "id": "rq-176",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-059"
+  },
+  {
+    "id": "rq-177",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-059"
+  },
+  {
+    "id": "rq-178",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur règlement des différends ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-060"
+  },
+  {
+    "id": "rq-179",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-060"
+  },
+  {
+    "id": "rq-180",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-060"
+  },
+  {
+    "id": "rq-181",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur politiques et gouvernance ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-061"
+  },
+  {
+    "id": "rq-182",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-061"
+  },
+  {
+    "id": "rq-183",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-061"
+  },
+  {
+    "id": "rq-184",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur approvisionnement et contrats ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-062"
+  },
+  {
+    "id": "rq-185",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-062"
+  },
+  {
+    "id": "rq-186",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-062"
+  },
+  {
+    "id": "rq-187",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur langues officielles ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-063"
+  },
+  {
+    "id": "rq-188",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-063"
+  },
+  {
+    "id": "rq-189",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-063"
+  },
+  {
+    "id": "rq-190",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur mobilisation des citoyens ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-064"
+  },
+  {
+    "id": "rq-191",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-064"
+  },
+  {
+    "id": "rq-192",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-064"
+  },
+  {
+    "id": "rq-193",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur numérique et technologies ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-065"
+  },
+  {
+    "id": "rq-194",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-065"
+  },
+  {
+    "id": "rq-195",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-065"
+  },
+  {
+    "id": "rq-196",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion financière ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-066"
+  },
+  {
+    "id": "rq-197",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-066"
+  },
+  {
+    "id": "rq-198",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-066"
+  },
+  {
+    "id": "rq-199",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur dotation et rh ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-067"
+  },
+  {
+    "id": "rq-200",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-067"
+  },
+  {
+    "id": "rq-201",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-067"
+  },
+  {
+    "id": "rq-202",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion de crise ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-068"
+  },
+  {
+    "id": "rq-203",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-068"
+  },
+  {
+    "id": "rq-204",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-068"
+  },
+  {
+    "id": "rq-205",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur vérification et risques ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-069"
+  },
+  {
+    "id": "rq-206",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-069"
+  },
+  {
+    "id": "rq-207",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-069"
+  },
+  {
+    "id": "rq-208",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur planification stratégique ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-070"
+  },
+  {
+    "id": "rq-209",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-070"
+  },
+  {
+    "id": "rq-210",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-070"
+  },
+  {
+    "id": "rq-211",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur prestation de services ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-071"
+  },
+  {
+    "id": "rq-212",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-071"
+  },
+  {
+    "id": "rq-213",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-071"
+  },
+  {
+    "id": "rq-214",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur valeurs et éthique ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-072"
+  },
+  {
+    "id": "rq-215",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-072"
+  },
+  {
+    "id": "rq-216",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-072"
+  },
+  {
+    "id": "rq-217",
+    "theme": "training",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur formation professionnelle ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-073"
+  },
+  {
+    "id": "rq-218",
+    "theme": "training",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-073"
+  },
+  {
+    "id": "rq-219",
+    "theme": "training",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-073"
+  },
+  {
+    "id": "rq-220",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur travail d’équipe ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-074"
+  },
+  {
+    "id": "rq-221",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-074"
+  },
+  {
+    "id": "rq-222",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-074"
+  },
+  {
+    "id": "rq-223",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion de projet ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-075"
+  },
+  {
+    "id": "rq-224",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-075"
+  },
+  {
+    "id": "rq-225",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-075"
+  },
+  {
+    "id": "rq-226",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur travail à distance ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-076"
+  },
+  {
+    "id": "rq-227",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-076"
+  },
+  {
+    "id": "rq-228",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-076"
+  },
+  {
+    "id": "rq-229",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur direction et leadership ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-077"
+  },
+  {
+    "id": "rq-230",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-077"
+  },
+  {
+    "id": "rq-231",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-077"
+  },
+  {
+    "id": "rq-232",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur règlement des différends ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-078"
+  },
+  {
+    "id": "rq-233",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-078"
+  },
+  {
+    "id": "rq-234",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-078"
+  },
+  {
+    "id": "rq-235",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur politiques et gouvernance ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-079"
+  },
+  {
+    "id": "rq-236",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-079"
+  },
+  {
+    "id": "rq-237",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-079"
+  },
+  {
+    "id": "rq-238",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur approvisionnement et contrats ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-080"
+  },
+  {
+    "id": "rq-239",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-080"
+  },
+  {
+    "id": "rq-240",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-080"
+  },
+  {
+    "id": "rq-241",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur langues officielles ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-081"
+  },
+  {
+    "id": "rq-242",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-081"
+  },
+  {
+    "id": "rq-243",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-081"
+  },
+  {
+    "id": "rq-244",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur mobilisation des citoyens ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-082"
+  },
+  {
+    "id": "rq-245",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-082"
+  },
+  {
+    "id": "rq-246",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-082"
+  },
+  {
+    "id": "rq-247",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur numérique et technologies ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-083"
+  },
+  {
+    "id": "rq-248",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-083"
+  },
+  {
+    "id": "rq-249",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-083"
+  },
+  {
+    "id": "rq-250",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion financière ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-084"
+  },
+  {
+    "id": "rq-251",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-084"
+  },
+  {
+    "id": "rq-252",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-084"
+  },
+  {
+    "id": "rq-253",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur dotation et rh ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-085"
+  },
+  {
+    "id": "rq-254",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-085"
+  },
+  {
+    "id": "rq-255",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-085"
+  },
+  {
+    "id": "rq-256",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion de crise ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-086"
+  },
+  {
+    "id": "rq-257",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-086"
+  },
+  {
+    "id": "rq-258",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-086"
+  },
+  {
+    "id": "rq-259",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur vérification et risques ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-087"
+  },
+  {
+    "id": "rq-260",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-087"
+  },
+  {
+    "id": "rq-261",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-087"
+  },
+  {
+    "id": "rq-262",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur planification stratégique ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-088"
+  },
+  {
+    "id": "rq-263",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-088"
+  },
+  {
+    "id": "rq-264",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-088"
+  },
+  {
+    "id": "rq-265",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur prestation de services ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-089"
+  },
+  {
+    "id": "rq-266",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-089"
+  },
+  {
+    "id": "rq-267",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-089"
+  },
+  {
+    "id": "rq-268",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur valeurs et éthique ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-090"
+  },
+  {
+    "id": "rq-269",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-090"
+  },
+  {
+    "id": "rq-270",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-090"
+  },
+  {
+    "id": "rq-271",
+    "theme": "training",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur formation professionnelle ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-091"
+  },
+  {
+    "id": "rq-272",
+    "theme": "training",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-091"
+  },
+  {
+    "id": "rq-273",
+    "theme": "training",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-091"
+  },
+  {
+    "id": "rq-274",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur travail d’équipe ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-092"
+  },
+  {
+    "id": "rq-275",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-092"
+  },
+  {
+    "id": "rq-276",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-092"
+  },
+  {
+    "id": "rq-277",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion de projet ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-093"
+  },
+  {
+    "id": "rq-278",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-093"
+  },
+  {
+    "id": "rq-279",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-093"
+  },
+  {
+    "id": "rq-280",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur travail à distance ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-094"
+  },
+  {
+    "id": "rq-281",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-094"
+  },
+  {
+    "id": "rq-282",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-094"
+  },
+  {
+    "id": "rq-283",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur direction et leadership ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-095"
+  },
+  {
+    "id": "rq-284",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-095"
+  },
+  {
+    "id": "rq-285",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-095"
+  },
+  {
+    "id": "rq-286",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur règlement des différends ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-096"
+  },
+  {
+    "id": "rq-287",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-096"
+  },
+  {
+    "id": "rq-288",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-096"
+  },
+  {
+    "id": "rq-289",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur politiques et gouvernance ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-097"
+  },
+  {
+    "id": "rq-290",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-097"
+  },
+  {
+    "id": "rq-291",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-097"
+  },
+  {
+    "id": "rq-292",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur approvisionnement et contrats ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-098"
+  },
+  {
+    "id": "rq-293",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-098"
+  },
+  {
+    "id": "rq-294",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-098"
+  },
+  {
+    "id": "rq-295",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur langues officielles ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-099"
+  },
+  {
+    "id": "rq-296",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-099"
+  },
+  {
+    "id": "rq-297",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-099"
+  },
+  {
+    "id": "rq-298",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur mobilisation des citoyens ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-100"
+  },
+  {
+    "id": "rq-299",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-100"
+  },
+  {
+    "id": "rq-300",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-100"
+  },
+  {
+    "id": "rq-301",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur numérique et technologies ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-101"
+  },
+  {
+    "id": "rq-302",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-101"
+  },
+  {
+    "id": "rq-303",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-101"
+  },
+  {
+    "id": "rq-304",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion financière ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-102"
+  },
+  {
+    "id": "rq-305",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-102"
+  },
+  {
+    "id": "rq-306",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-102"
+  },
+  {
+    "id": "rq-307",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur dotation et rh ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-103"
+  },
+  {
+    "id": "rq-308",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-103"
+  },
+  {
+    "id": "rq-309",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-103"
+  },
+  {
+    "id": "rq-310",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion de crise ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-104"
+  },
+  {
+    "id": "rq-311",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-104"
+  },
+  {
+    "id": "rq-312",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-104"
+  },
+  {
+    "id": "rq-313",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur vérification et risques ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-105"
+  },
+  {
+    "id": "rq-314",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-105"
+  },
+  {
+    "id": "rq-315",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-105"
+  },
+  {
+    "id": "rq-316",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur planification stratégique ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-106"
+  },
+  {
+    "id": "rq-317",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-106"
+  },
+  {
+    "id": "rq-318",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-106"
+  },
+  {
+    "id": "rq-319",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur prestation de services ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-107"
+  },
+  {
+    "id": "rq-320",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-107"
+  },
+  {
+    "id": "rq-321",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-107"
+  },
+  {
+    "id": "rq-322",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur valeurs et éthique ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-108"
+  },
+  {
+    "id": "rq-323",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-108"
+  },
+  {
+    "id": "rq-324",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-108"
+  },
+  {
+    "id": "rq-325",
+    "theme": "training",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur formation professionnelle ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-109"
+  },
+  {
+    "id": "rq-326",
+    "theme": "training",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-109"
+  },
+  {
+    "id": "rq-327",
+    "theme": "training",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-109"
+  },
+  {
+    "id": "rq-328",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur travail d’équipe ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-110"
+  },
+  {
+    "id": "rq-329",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-110"
+  },
+  {
+    "id": "rq-330",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-110"
+  },
+  {
+    "id": "rq-331",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion de projet ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-111"
+  },
+  {
+    "id": "rq-332",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-111"
+  },
+  {
+    "id": "rq-333",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-111"
+  },
+  {
+    "id": "rq-334",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur travail à distance ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-112"
+  },
+  {
+    "id": "rq-335",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-112"
+  },
+  {
+    "id": "rq-336",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-112"
+  },
+  {
+    "id": "rq-337",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur direction et leadership ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-113"
+  },
+  {
+    "id": "rq-338",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-113"
+  },
+  {
+    "id": "rq-339",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-113"
+  },
+  {
+    "id": "rq-340",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur règlement des différends ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-114"
+  },
+  {
+    "id": "rq-341",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-114"
+  },
+  {
+    "id": "rq-342",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-114"
+  },
+  {
+    "id": "rq-343",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur politiques et gouvernance ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-115"
+  },
+  {
+    "id": "rq-344",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-115"
+  },
+  {
+    "id": "rq-345",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-115"
+  },
+  {
+    "id": "rq-346",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur approvisionnement et contrats ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-116"
+  },
+  {
+    "id": "rq-347",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-116"
+  },
+  {
+    "id": "rq-348",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-116"
+  },
+  {
+    "id": "rq-349",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur langues officielles ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-117"
+  },
+  {
+    "id": "rq-350",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-117"
+  },
+  {
+    "id": "rq-351",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-117"
+  },
+  {
+    "id": "rq-352",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur mobilisation des citoyens ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-118"
+  },
+  {
+    "id": "rq-353",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-118"
+  },
+  {
+    "id": "rq-354",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-118"
+  },
+  {
+    "id": "rq-355",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur numérique et technologies ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-119"
+  },
+  {
+    "id": "rq-356",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-119"
+  },
+  {
+    "id": "rq-357",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-119"
+  },
+  {
+    "id": "rq-358",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion financière ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-120"
+  },
+  {
+    "id": "rq-359",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-120"
+  },
+  {
+    "id": "rq-360",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-120"
+  },
+  {
+    "id": "rq-361",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur dotation et rh ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-121"
+  },
+  {
+    "id": "rq-362",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-121"
+  },
+  {
+    "id": "rq-363",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-121"
+  },
+  {
+    "id": "rq-364",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion de crise ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-122"
+  },
+  {
+    "id": "rq-365",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-122"
+  },
+  {
+    "id": "rq-366",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-122"
+  },
+  {
+    "id": "rq-367",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur vérification et risques ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-123"
+  },
+  {
+    "id": "rq-368",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-123"
+  },
+  {
+    "id": "rq-369",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-123"
+  },
+  {
+    "id": "rq-370",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur planification stratégique ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-124"
+  },
+  {
+    "id": "rq-371",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-124"
+  },
+  {
+    "id": "rq-372",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-124"
+  },
+  {
+    "id": "rq-373",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur prestation de services ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-125"
+  },
+  {
+    "id": "rq-374",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-125"
+  },
+  {
+    "id": "rq-375",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-125"
+  },
+  {
+    "id": "rq-376",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur valeurs et éthique ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-126"
+  },
+  {
+    "id": "rq-377",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-126"
+  },
+  {
+    "id": "rq-378",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-126"
+  },
+  {
+    "id": "rq-379",
+    "theme": "training",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur formation professionnelle ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-127"
+  },
+  {
+    "id": "rq-380",
+    "theme": "training",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-127"
+  },
+  {
+    "id": "rq-381",
+    "theme": "training",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-127"
+  },
+  {
+    "id": "rq-382",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur travail d’équipe ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-128"
+  },
+  {
+    "id": "rq-383",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-128"
+  },
+  {
+    "id": "rq-384",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-128"
+  },
+  {
+    "id": "rq-385",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion de projet ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-129"
+  },
+  {
+    "id": "rq-386",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-129"
+  },
+  {
+    "id": "rq-387",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-129"
+  },
+  {
+    "id": "rq-388",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur travail à distance ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-130"
+  },
+  {
+    "id": "rq-389",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-130"
+  },
+  {
+    "id": "rq-390",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-130"
+  },
+  {
+    "id": "rq-391",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur direction et leadership ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-131"
+  },
+  {
+    "id": "rq-392",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-131"
+  },
+  {
+    "id": "rq-393",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-131"
+  },
+  {
+    "id": "rq-394",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur règlement des différends ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-132"
+  },
+  {
+    "id": "rq-395",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-132"
+  },
+  {
+    "id": "rq-396",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-132"
+  },
+  {
+    "id": "rq-397",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur politiques et gouvernance ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-133"
+  },
+  {
+    "id": "rq-398",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-133"
+  },
+  {
+    "id": "rq-399",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-133"
+  },
+  {
+    "id": "rq-400",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur approvisionnement et contrats ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-134"
+  },
+  {
+    "id": "rq-401",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-134"
+  },
+  {
+    "id": "rq-402",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-134"
+  },
+  {
+    "id": "rq-403",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur langues officielles ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-135"
+  },
+  {
+    "id": "rq-404",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-135"
+  },
+  {
+    "id": "rq-405",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-135"
+  },
+  {
+    "id": "rq-406",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur mobilisation des citoyens ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-136"
+  },
+  {
+    "id": "rq-407",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-136"
+  },
+  {
+    "id": "rq-408",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-136"
+  },
+  {
+    "id": "rq-409",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur numérique et technologies ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-137"
+  },
+  {
+    "id": "rq-410",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-137"
+  },
+  {
+    "id": "rq-411",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-137"
+  },
+  {
+    "id": "rq-412",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion financière ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-138"
+  },
+  {
+    "id": "rq-413",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-138"
+  },
+  {
+    "id": "rq-414",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-138"
+  },
+  {
+    "id": "rq-415",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur dotation et rh ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-139"
+  },
+  {
+    "id": "rq-416",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-139"
+  },
+  {
+    "id": "rq-417",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-139"
+  },
+  {
+    "id": "rq-418",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion de crise ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-140"
+  },
+  {
+    "id": "rq-419",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-140"
+  },
+  {
+    "id": "rq-420",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-140"
+  },
+  {
+    "id": "rq-421",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur vérification et risques ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-141"
+  },
+  {
+    "id": "rq-422",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-141"
+  },
+  {
+    "id": "rq-423",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-141"
+  },
+  {
+    "id": "rq-424",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur planification stratégique ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-142"
+  },
+  {
+    "id": "rq-425",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-142"
+  },
+  {
+    "id": "rq-426",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-142"
+  },
+  {
+    "id": "rq-427",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur prestation de services ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-143"
+  },
+  {
+    "id": "rq-428",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-143"
+  },
+  {
+    "id": "rq-429",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-143"
+  },
+  {
+    "id": "rq-430",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur valeurs et éthique ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-144"
+  },
+  {
+    "id": "rq-431",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-144"
+  },
+  {
+    "id": "rq-432",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-144"
+  },
+  {
+    "id": "rq-433",
+    "theme": "training",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur formation professionnelle ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-145"
+  },
+  {
+    "id": "rq-434",
+    "theme": "training",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-145"
+  },
+  {
+    "id": "rq-435",
+    "theme": "training",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-145"
+  },
+  {
+    "id": "rq-436",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur travail d’équipe ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-146"
+  },
+  {
+    "id": "rq-437",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-146"
+  },
+  {
+    "id": "rq-438",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-146"
+  },
+  {
+    "id": "rq-439",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion de projet ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-147"
+  },
+  {
+    "id": "rq-440",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-147"
+  },
+  {
+    "id": "rq-441",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-147"
+  },
+  {
+    "id": "rq-442",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur travail à distance ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-148"
+  },
+  {
+    "id": "rq-443",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-148"
+  },
+  {
+    "id": "rq-444",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-148"
+  },
+  {
+    "id": "rq-445",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur direction et leadership ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-149"
+  },
+  {
+    "id": "rq-446",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-149"
+  },
+  {
+    "id": "rq-447",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-149"
+  },
+  {
+    "id": "rq-448",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur règlement des différends ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-150"
+  },
+  {
+    "id": "rq-449",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-150"
+  },
+  {
+    "id": "rq-450",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-150"
+  },
+  {
+    "id": "rq-451",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur politiques et gouvernance ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-151"
+  },
+  {
+    "id": "rq-452",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-151"
+  },
+  {
+    "id": "rq-453",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-151"
+  },
+  {
+    "id": "rq-454",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur approvisionnement et contrats ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-152"
+  },
+  {
+    "id": "rq-455",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-152"
+  },
+  {
+    "id": "rq-456",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-152"
+  },
+  {
+    "id": "rq-457",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur langues officielles ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-153"
+  },
+  {
+    "id": "rq-458",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-153"
+  },
+  {
+    "id": "rq-459",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-153"
+  },
+  {
+    "id": "rq-460",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur mobilisation des citoyens ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-154"
+  },
+  {
+    "id": "rq-461",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-154"
+  },
+  {
+    "id": "rq-462",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-154"
+  },
+  {
+    "id": "rq-463",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur numérique et technologies ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-155"
+  },
+  {
+    "id": "rq-464",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-155"
+  },
+  {
+    "id": "rq-465",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-155"
+  },
+  {
+    "id": "rq-466",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion financière ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-156"
+  },
+  {
+    "id": "rq-467",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-156"
+  },
+  {
+    "id": "rq-468",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-156"
+  },
+  {
+    "id": "rq-469",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur dotation et rh ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-157"
+  },
+  {
+    "id": "rq-470",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-157"
+  },
+  {
+    "id": "rq-471",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-157"
+  },
+  {
+    "id": "rq-472",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion de crise ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-158"
+  },
+  {
+    "id": "rq-473",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-158"
+  },
+  {
+    "id": "rq-474",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-158"
+  },
+  {
+    "id": "rq-475",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur vérification et risques ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-159"
+  },
+  {
+    "id": "rq-476",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-159"
+  },
+  {
+    "id": "rq-477",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-159"
+  },
+  {
+    "id": "rq-478",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur planification stratégique ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-160"
+  },
+  {
+    "id": "rq-479",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-160"
+  },
+  {
+    "id": "rq-480",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-160"
+  },
+  {
+    "id": "rq-481",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur prestation de services ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-161"
+  },
+  {
+    "id": "rq-482",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-161"
+  },
+  {
+    "id": "rq-483",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-161"
+  },
+  {
+    "id": "rq-484",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur valeurs et éthique ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-162"
+  },
+  {
+    "id": "rq-485",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-162"
+  },
+  {
+    "id": "rq-486",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-162"
+  },
+  {
+    "id": "rq-487",
+    "theme": "training",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur formation professionnelle ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-163"
+  },
+  {
+    "id": "rq-488",
+    "theme": "training",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-163"
+  },
+  {
+    "id": "rq-489",
+    "theme": "training",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-163"
+  },
+  {
+    "id": "rq-490",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur travail d’équipe ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-164"
+  },
+  {
+    "id": "rq-491",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-164"
+  },
+  {
+    "id": "rq-492",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-164"
+  },
+  {
+    "id": "rq-493",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion de projet ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-165"
+  },
+  {
+    "id": "rq-494",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-165"
+  },
+  {
+    "id": "rq-495",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-165"
+  },
+  {
+    "id": "rq-496",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur travail à distance ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-166"
+  },
+  {
+    "id": "rq-497",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-166"
+  },
+  {
+    "id": "rq-498",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-166"
+  },
+  {
+    "id": "rq-499",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur direction et leadership ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-167"
+  },
+  {
+    "id": "rq-500",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-167"
+  },
+  {
+    "id": "rq-501",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-167"
+  },
+  {
+    "id": "rq-502",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur règlement des différends ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-168"
+  },
+  {
+    "id": "rq-503",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-168"
+  },
+  {
+    "id": "rq-504",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-168"
+  },
+  {
+    "id": "rq-505",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur politiques et gouvernance ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-169"
+  },
+  {
+    "id": "rq-506",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-169"
+  },
+  {
+    "id": "rq-507",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-169"
+  },
+  {
+    "id": "rq-508",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur approvisionnement et contrats ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-170"
+  },
+  {
+    "id": "rq-509",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-170"
+  },
+  {
+    "id": "rq-510",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-170"
+  },
+  {
+    "id": "rq-511",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur langues officielles ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-171"
+  },
+  {
+    "id": "rq-512",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-171"
+  },
+  {
+    "id": "rq-513",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-171"
+  },
+  {
+    "id": "rq-514",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur mobilisation des citoyens ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-172"
+  },
+  {
+    "id": "rq-515",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-172"
+  },
+  {
+    "id": "rq-516",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-172"
+  },
+  {
+    "id": "rq-517",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur numérique et technologies ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-173"
+  },
+  {
+    "id": "rq-518",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-173"
+  },
+  {
+    "id": "rq-519",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-173"
+  },
+  {
+    "id": "rq-520",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion financière ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-174"
+  },
+  {
+    "id": "rq-521",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-174"
+  },
+  {
+    "id": "rq-522",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-174"
+  },
+  {
+    "id": "rq-523",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur dotation et rh ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-175"
+  },
+  {
+    "id": "rq-524",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-175"
+  },
+  {
+    "id": "rq-525",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-175"
+  },
+  {
+    "id": "rq-526",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion de crise ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-176"
+  },
+  {
+    "id": "rq-527",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-176"
+  },
+  {
+    "id": "rq-528",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-176"
+  },
+  {
+    "id": "rq-529",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur vérification et risques ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-177"
+  },
+  {
+    "id": "rq-530",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-177"
+  },
+  {
+    "id": "rq-531",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-177"
+  },
+  {
+    "id": "rq-532",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur planification stratégique ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-178"
+  },
+  {
+    "id": "rq-533",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-178"
+  },
+  {
+    "id": "rq-534",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-178"
+  },
+  {
+    "id": "rq-535",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur prestation de services ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-179"
+  },
+  {
+    "id": "rq-536",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-179"
+  },
+  {
+    "id": "rq-537",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-179"
+  },
+  {
+    "id": "rq-538",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur valeurs et éthique ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-180"
+  },
+  {
+    "id": "rq-539",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-180"
+  },
+  {
+    "id": "rq-540",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-180"
+  },
+  {
+    "id": "rq-541",
+    "theme": "training",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur formation professionnelle ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-181"
+  },
+  {
+    "id": "rq-542",
+    "theme": "training",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-181"
+  },
+  {
+    "id": "rq-543",
+    "theme": "training",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-181"
+  },
+  {
+    "id": "rq-544",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur travail d’équipe ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-182"
+  },
+  {
+    "id": "rq-545",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-182"
+  },
+  {
+    "id": "rq-546",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-182"
+  },
+  {
+    "id": "rq-547",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion de projet ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-183"
+  },
+  {
+    "id": "rq-548",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-183"
+  },
+  {
+    "id": "rq-549",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-183"
+  },
+  {
+    "id": "rq-550",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur travail à distance ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-184"
+  },
+  {
+    "id": "rq-551",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-184"
+  },
+  {
+    "id": "rq-552",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-184"
+  },
+  {
+    "id": "rq-553",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur direction et leadership ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-185"
+  },
+  {
+    "id": "rq-554",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-185"
+  },
+  {
+    "id": "rq-555",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-185"
+  },
+  {
+    "id": "rq-556",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur règlement des différends ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-186"
+  },
+  {
+    "id": "rq-557",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-186"
+  },
+  {
+    "id": "rq-558",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-186"
+  },
+  {
+    "id": "rq-559",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur politiques et gouvernance ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-187"
+  },
+  {
+    "id": "rq-560",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-187"
+  },
+  {
+    "id": "rq-561",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-187"
+  },
+  {
+    "id": "rq-562",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur approvisionnement et contrats ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-188"
+  },
+  {
+    "id": "rq-563",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-188"
+  },
+  {
+    "id": "rq-564",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-188"
+  },
+  {
+    "id": "rq-565",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur langues officielles ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-189"
+  },
+  {
+    "id": "rq-566",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-189"
+  },
+  {
+    "id": "rq-567",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-189"
+  },
+  {
+    "id": "rq-568",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur mobilisation des citoyens ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-190"
+  },
+  {
+    "id": "rq-569",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-190"
+  },
+  {
+    "id": "rq-570",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-190"
+  },
+  {
+    "id": "rq-571",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur numérique et technologies ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-191"
+  },
+  {
+    "id": "rq-572",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-191"
+  },
+  {
+    "id": "rq-573",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-191"
+  },
+  {
+    "id": "rq-574",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion financière ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-192"
+  },
+  {
+    "id": "rq-575",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-192"
+  },
+  {
+    "id": "rq-576",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-192"
+  },
+  {
+    "id": "rq-577",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur dotation et rh ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-193"
+  },
+  {
+    "id": "rq-578",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-193"
+  },
+  {
+    "id": "rq-579",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-193"
+  },
+  {
+    "id": "rq-580",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion de crise ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-194"
+  },
+  {
+    "id": "rq-581",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-194"
+  },
+  {
+    "id": "rq-582",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-194"
+  },
+  {
+    "id": "rq-583",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur vérification et risques ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-195"
+  },
+  {
+    "id": "rq-584",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-195"
+  },
+  {
+    "id": "rq-585",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-195"
+  },
+  {
+    "id": "rq-586",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur planification stratégique ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-196"
+  },
+  {
+    "id": "rq-587",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-196"
+  },
+  {
+    "id": "rq-588",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-196"
+  },
+  {
+    "id": "rq-589",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur prestation de services ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-197"
+  },
+  {
+    "id": "rq-590",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-197"
+  },
+  {
+    "id": "rq-591",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-197"
+  },
+  {
+    "id": "rq-592",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur valeurs et éthique ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-198"
+  },
+  {
+    "id": "rq-593",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-198"
+  },
+  {
+    "id": "rq-594",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-198"
+  },
+  {
+    "id": "rq-595",
+    "theme": "training",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur formation professionnelle ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-199"
+  },
+  {
+    "id": "rq-596",
+    "theme": "training",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-199"
+  },
+  {
+    "id": "rq-597",
+    "theme": "training",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-199"
+  },
+  {
+    "id": "rq-598",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur travail d’équipe ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-200"
+  },
+  {
+    "id": "rq-599",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-200"
+  },
+  {
+    "id": "rq-600",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-200"
+  },
+  {
+    "id": "rq-601",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion de projet ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-201"
+  },
+  {
+    "id": "rq-602",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-201"
+  },
+  {
+    "id": "rq-603",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-201"
+  },
+  {
+    "id": "rq-604",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur travail à distance ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-202"
+  },
+  {
+    "id": "rq-605",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-202"
+  },
+  {
+    "id": "rq-606",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-202"
+  },
+  {
+    "id": "rq-607",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur direction et leadership ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-203"
+  },
+  {
+    "id": "rq-608",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-203"
+  },
+  {
+    "id": "rq-609",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-203"
+  },
+  {
+    "id": "rq-610",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur règlement des différends ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-204"
+  },
+  {
+    "id": "rq-611",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-204"
+  },
+  {
+    "id": "rq-612",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-204"
+  },
+  {
+    "id": "rq-613",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur politiques et gouvernance ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-205"
+  },
+  {
+    "id": "rq-614",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-205"
+  },
+  {
+    "id": "rq-615",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-205"
+  },
+  {
+    "id": "rq-616",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur approvisionnement et contrats ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-206"
+  },
+  {
+    "id": "rq-617",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-206"
+  },
+  {
+    "id": "rq-618",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-206"
+  },
+  {
+    "id": "rq-619",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur langues officielles ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-207"
+  },
+  {
+    "id": "rq-620",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-207"
+  },
+  {
+    "id": "rq-621",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-207"
+  },
+  {
+    "id": "rq-622",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur mobilisation des citoyens ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-208"
+  },
+  {
+    "id": "rq-623",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-208"
+  },
+  {
+    "id": "rq-624",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-208"
+  },
+  {
+    "id": "rq-625",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur numérique et technologies ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-209"
+  },
+  {
+    "id": "rq-626",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-209"
+  },
+  {
+    "id": "rq-627",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-209"
+  },
+  {
+    "id": "rq-628",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion financière ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-210"
+  },
+  {
+    "id": "rq-629",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-210"
+  },
+  {
+    "id": "rq-630",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-210"
+  },
+  {
+    "id": "rq-631",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur dotation et rh ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-211"
+  },
+  {
+    "id": "rq-632",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-211"
+  },
+  {
+    "id": "rq-633",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-211"
+  },
+  {
+    "id": "rq-634",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion de crise ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-212"
+  },
+  {
+    "id": "rq-635",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-212"
+  },
+  {
+    "id": "rq-636",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-212"
+  },
+  {
+    "id": "rq-637",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur vérification et risques ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-213"
+  },
+  {
+    "id": "rq-638",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-213"
+  },
+  {
+    "id": "rq-639",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-213"
+  },
+  {
+    "id": "rq-640",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur planification stratégique ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-214"
+  },
+  {
+    "id": "rq-641",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-214"
+  },
+  {
+    "id": "rq-642",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-214"
+  },
+  {
+    "id": "rq-643",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur prestation de services ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-215"
+  },
+  {
+    "id": "rq-644",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-215"
+  },
+  {
+    "id": "rq-645",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-215"
+  },
+  {
+    "id": "rq-646",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur valeurs et éthique ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-216"
+  },
+  {
+    "id": "rq-647",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-216"
+  },
+  {
+    "id": "rq-648",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-216"
+  },
+  {
+    "id": "rq-649",
+    "theme": "training",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur formation professionnelle ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-217"
+  },
+  {
+    "id": "rq-650",
+    "theme": "training",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-217"
+  },
+  {
+    "id": "rq-651",
+    "theme": "training",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-217"
+  },
+  {
+    "id": "rq-652",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur travail d’équipe ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-218"
+  },
+  {
+    "id": "rq-653",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-218"
+  },
+  {
+    "id": "rq-654",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-218"
+  },
+  {
+    "id": "rq-655",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion de projet ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-219"
+  },
+  {
+    "id": "rq-656",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-219"
+  },
+  {
+    "id": "rq-657",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-219"
+  },
+  {
+    "id": "rq-658",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur travail à distance ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-220"
+  },
+  {
+    "id": "rq-659",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-220"
+  },
+  {
+    "id": "rq-660",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-220"
+  },
+  {
+    "id": "rq-661",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur direction et leadership ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-221"
+  },
+  {
+    "id": "rq-662",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-221"
+  },
+  {
+    "id": "rq-663",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-221"
+  },
+  {
+    "id": "rq-664",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur règlement des différends ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-222"
+  },
+  {
+    "id": "rq-665",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-222"
+  },
+  {
+    "id": "rq-666",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-222"
+  },
+  {
+    "id": "rq-667",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur politiques et gouvernance ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-223"
+  },
+  {
+    "id": "rq-668",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-223"
+  },
+  {
+    "id": "rq-669",
+    "theme": "policy",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour politiques et gouvernance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-223"
+  },
+  {
+    "id": "rq-670",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur approvisionnement et contrats ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-224"
+  },
+  {
+    "id": "rq-671",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-224"
+  },
+  {
+    "id": "rq-672",
+    "theme": "procurement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour approvisionnement et contrats.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-224"
+  },
+  {
+    "id": "rq-673",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur langues officielles ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-225"
+  },
+  {
+    "id": "rq-674",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-225"
+  },
+  {
+    "id": "rq-675",
+    "theme": "bilingualism",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour langues officielles.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-225"
+  },
+  {
+    "id": "rq-676",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur mobilisation des citoyens ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-226"
+  },
+  {
+    "id": "rq-677",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-226"
+  },
+  {
+    "id": "rq-678",
+    "theme": "public-engagement",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour mobilisation des citoyens.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-226"
+  },
+  {
+    "id": "rq-679",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur numérique et technologies ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-227"
+  },
+  {
+    "id": "rq-680",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-227"
+  },
+  {
+    "id": "rq-681",
+    "theme": "it-digital",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour numérique et technologies.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-227"
+  },
+  {
+    "id": "rq-682",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion financière ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-228"
+  },
+  {
+    "id": "rq-683",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-228"
+  },
+  {
+    "id": "rq-684",
+    "theme": "finance",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion financière.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-228"
+  },
+  {
+    "id": "rq-685",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur dotation et rh ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-229"
+  },
+  {
+    "id": "rq-686",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-229"
+  },
+  {
+    "id": "rq-687",
+    "theme": "staffing",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour dotation et rh.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-229"
+  },
+  {
+    "id": "rq-688",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion de crise ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-230"
+  },
+  {
+    "id": "rq-689",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-230"
+  },
+  {
+    "id": "rq-690",
+    "theme": "crisis-mgmt",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de crise.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-230"
+  },
+  {
+    "id": "rq-691",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur vérification et risques ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-231"
+  },
+  {
+    "id": "rq-692",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-231"
+  },
+  {
+    "id": "rq-693",
+    "theme": "audit",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour vérification et risques.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-231"
+  },
+  {
+    "id": "rq-694",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur planification stratégique ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-232"
+  },
+  {
+    "id": "rq-695",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-232"
+  },
+  {
+    "id": "rq-696",
+    "theme": "strategic-planning",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour planification stratégique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-232"
+  },
+  {
+    "id": "rq-697",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur prestation de services ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-233"
+  },
+  {
+    "id": "rq-698",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-233"
+  },
+  {
+    "id": "rq-699",
+    "theme": "services-canada",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour prestation de services.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-233"
+  },
+  {
+    "id": "rq-700",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur valeurs et éthique ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-234"
+  },
+  {
+    "id": "rq-701",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-234"
+  },
+  {
+    "id": "rq-702",
+    "theme": "values-ethics",
+    "skill": "reading",
+    "level": "B",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour valeurs et éthique.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-234"
+  },
+  {
+    "id": "rq-703",
+    "theme": "training",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quel est l'objectif principal de cette note sur formation professionnelle ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-235"
+  },
+  {
+    "id": "rq-704",
+    "theme": "training",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-235"
+  },
+  {
+    "id": "rq-705",
+    "theme": "training",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour formation professionnelle.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-235"
+  },
+  {
+    "id": "rq-706",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Quel est l'objectif principal de cette note sur travail d’équipe ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-236"
+  },
+  {
+    "id": "rq-707",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-236"
+  },
+  {
+    "id": "rq-708",
+    "theme": "teamwork",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail d’équipe.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-236"
+  },
+  {
+    "id": "rq-709",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Distinguish obligations from optional guidance",
+    "prompt": "Quel est l'objectif principal de cette note sur gestion de projet ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-237"
+  },
+  {
+    "id": "rq-710",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-237"
+  },
+  {
+    "id": "rq-711",
+    "theme": "projects",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour gestion de projet.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-237"
+  },
+  {
+    "id": "rq-712",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Trace sequence of events and administrative deadlines",
+    "prompt": "Quel est l'objectif principal de cette note sur travail à distance ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-238"
+  },
+  {
+    "id": "rq-713",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-238"
+  },
+  {
+    "id": "rq-714",
+    "theme": "telework",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour travail à distance.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-238"
+  },
+  {
+    "id": "rq-715",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Analyze complex administrative arguments and exceptions",
+    "prompt": "Quel est l'objectif principal de cette note sur direction et leadership ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-239"
+  },
+  {
+    "id": "rq-716",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-239"
+  },
+  {
+    "id": "rq-717",
+    "theme": "leadership",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour direction et leadership.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-239"
+  },
+  {
+    "id": "rq-718",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify tone, implicit assumptions and policy rationale",
+    "prompt": "Quel est l'objectif principal de cette note sur règlement des différends ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-240"
+  },
+  {
+    "id": "rq-719",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Identify main idea and core mandate",
+    "prompt": "Quelle condition est nécessaire pour obtenir une dérogation ou une modification ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-240"
+  },
+  {
+    "id": "rq-720",
+    "theme": "conflict",
+    "skill": "reading",
+    "level": "C",
+    "objective": "Recognize conditions, prerequisites and constraints",
+    "prompt": "Que précise le texte concernant les délais ou les critères prioritaires ?",
+    "options": [
+      "Préciser les modalités d'application et les exigences requises pour règlement des différends.",
+      "Annuler l'ensemble des procédures existantes sans consultation préalable du comité.",
+      "Rendre la participation totalement optionnelle pour l'ensemble des employés du secteur."
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le texte énonce clairement la démarche à suivre et la nécessité de respecter les consignes établies.",
+      "Le document ne mentionne aucune annulation générale mais décrit une procédure structurée.",
+      "Le texte fixe des obligations précises et ne rend pas la démarche purement facultative."
+    ],
+    "passageId": "p-240"
+  }
+];

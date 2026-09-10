@@ -1,101 +1,15963 @@
-import type { Level, Question, ThemeId } from '../types';
-type Item=[string,string,string,string,string,string,string,string];
-const questions:Question[]=[];
-function bank(theme:ThemeId,level:Level,rows:Item[]){rows.forEach(([objective,prompt,correct,why,bad1,why1,bad2,why2])=>{const n=questions.length;const shift=n%3;const options=[correct,bad1,bad2],explanations=[why,why1,why2];for(let j=0;j<shift;j++){options.push(options.shift()!);explanations.push(explanations.shift()!)}questions.push({id:`w-${theme}-${questions.filter(q=>q.theme===theme).length+1}`,theme,level,skill:'writing',objective,prompt,options,answer:(3-shift)%3,explanations})})}
-bank('training','B',[
- ['Prepositions','Elle s’est inscrite ___ un cours de rédaction.','à','S’inscrire à is the required construction.','de','De does not introduce the course after s’inscrire.','pour de','Pour de is not a grammatical combination here.'],
- ['Verb forms','Nous ___ la formation demain matin.','suivrons','The future of suivre for nous is suivrons.','suivront','Suivront agrees with ils or elles, not nous.','suivrez','Suivrez agrees with vous, not nous.'],
- ['Agreement','Cette formation est très ___.','utile','Utile has the same spelling in masculine and feminine singular.','utiles','The adjective modifies singular formation.','utilité','Utilité is a noun; an adjective is required after est très.'],
- ['Vocabulary','Veuillez ___ le formulaire avant vendredi.','remplir','Remplir un formulaire means to complete a form.','remplissage','A noun cannot follow veuillez in this construction.','remplissez','Veuillez takes an infinitive, not another imperative.'],
- ['Cohesion','Le cours est complet. ___, vous pouvez vous inscrire sur la liste d’attente.','Toutefois','Toutefois introduces the remaining possibility despite the course being full.','Parce que','Parce que would leave a dependent clause with no main clause.','Afin de','Afin de must be followed by an infinitive, not vous pouvez.'],
- ['Agreement','Quelle section contient une erreur? « Les nouveaux employés / participe à la formation / chaque lundi. »','participe à la formation','The plural subject requires participent.','Les nouveaux employés','The determiner, adjective, and noun agree in the plural.','chaque lundi','Chaque correctly takes a singular noun.'],
- ['Register','Quelle demande est formulée de manière polie et correcte?','Pourriez-vous confirmer mon inscription?','The conditional politely asks for confirmation.','Vous confirmer mon inscription?','This lacks a conjugated verb.','Pourriez-vous confirmez mon inscription?','Pourriez-vous must be followed by the infinitive confirmer.']]);
-bank('training','C',[
- ['Subjunctive','Il faut que chaque participant ___ le module.','termine','Il faut que requires the subjunctive; termine is correct for a singular subject.','terminera','The future indicative does not follow il faut que here.','terminent','This plural form does not agree with chaque participant.'],
- ['Subjunctive','Bien que le cours ___ facultatif, il est recommandé.','soit','Bien que takes the subjunctive.','est','Est is indicative, not subjunctive.','sera','The future indicative is not appropriate after bien que.'],
- ['Pronouns','Les compétences ___ nous avons besoin seront abordées.','dont','Avoir besoin de requires dont.','que','Que would replace a direct object; besoin takes de.','où','Où refers to a place or time, not the object of besoin de.'],
- ['Agreement','Les méthodes que la formatrice a ___ sont utiles.','présentées','The preceding direct object méthodes is feminine plural.','présenté','With avoir, agreement is required when the direct object precedes.','présentés','The object is feminine, so the masculine plural is incorrect.'],
- ['Verb forms','Si j’avais reçu l’invitation, je ___ inscrit.','me serais','An unreal past condition takes the past conditional in the result.','me serai','This is future perfect, not past conditional.','m’étais','The plus-que-parfait does not express the hypothetical result here.'],
- ['Cohesion','La formation est accessible, ___ les participants disposent d’une connexion.','pourvu que','Pourvu que introduces a condition and takes the subjunctive.','malgré','Malgré requires a noun phrase, not this conjugated clause.','afin de','Afin de requires an infinitive.'],
- ['Agreement','Quelle section contient une erreur? « Les ressources / que nous avons consulté / sont à jour. »','que nous avons consulté','Consultées must agree with the preceding feminine plural object ressources.','Les ressources','This noun phrase is correctly formed.','sont à jour','Sont agrees with ressources; à jour is invariable.']]);
-bank('teamwork','B',[
- ['Pronouns','Les collègues attendent le document. Je ___ envoie une copie.','leur','Envoyer à des personnes uses the indirect object pronoun leur.','leurs','The pronoun leur never takes s.','les','Les would be a direct object pronoun; the copy is the direct object.'],
- ['Agreement','Les tâches sont bien ___.','réparties','The adjective agrees with feminine plural tâches.','répartis','This is masculine plural.','répartie','The singular does not agree with tâches.'],
- ['Verb forms','Vous ___ présenter le dossier lundi.','devez','Devez agrees with vous and takes an infinitive.','doivent','Doivent agrees with ils or elles.','dois','Dois agrees with je or tu.'],
- ['Prepositions','Merci de répondre ___ vos collègues.','à','Répondre à quelqu’un takes à.','de','Répondre de means to answer for something, not reply to a person.','chez','Chez marks a location associated with a person.'],
- ['Vocabulary','Nous devons ___ les responsabilités avant de commencer.','préciser','Préciser means to clarify and fits the infinitive construction.','précision','A noun cannot follow devons here.','précises','This is not an infinitive.'],
- ['Agreement','Quelle section contient une erreur? « Notre équipe / travaillent ensemble / sur ce dossier. »','travaillent ensemble','Équipe is singular and requires travaille.','Notre équipe','Notre correctly agrees with the singular noun.','sur ce dossier','This prepositional phrase is correct.'],
- ['Cohesion','Karim est absent; ___, Aline assurera le suivi.','par conséquent','The replacement is a consequence of his absence.','bien que','Bien que cannot introduce this future indicative main clause.','afin de','Afin de needs an infinitive, not Aline assurera.']]);
-bank('teamwork','C',[
- ['Agreement','Les décisions que l’équipe a ___ seront communiquées.','prises','The preceding direct object décisions is feminine plural.','pris','The participle must agree with the preceding direct object.','prise','A singular participle does not agree with décisions.'],
- ['Pronouns','Voici la collègue ___ je vous ai parlé.','dont','Parler de quelqu’un is represented by dont.','que','The object is introduced by de, so que is not suitable.','où','Où is used for place or time.'],
- ['Subjunctive','Il est essentiel que nous ___ les informations.','partagions','The subjunctive of partager for nous is partagions.','partageons','This is present indicative.','partagerons','This is future indicative.'],
- ['Verb forms','Si les rôles étaient clairs, nous ___ du temps.','gagnerions','Si + imparfait pairs with the present conditional here.','gagnerons','The future does not match this hypothetical condition.','gagnions','This is the imperfect, not the conditional result.'],
- ['Cohesion','___ leurs avis divergent, ils ont trouvé un compromis.','Bien que','Bien que introduces a concession; divergent is also the subjunctive form.','Malgré','Malgré cannot directly introduce this finite clause.','En dépit','En dépit needs de followed by a noun phrase.'],
- ['Agreement','Quelle section contient une erreur? « Chacun des membres / ont reçu / le compte rendu. »','ont reçu','The subject chacun is singular, so use a reçu.','Chacun des membres','Chacun de + plural group is grammatical.','le compte rendu','This noun phrase is correctly singular.'],
- ['Register','Quelle phrase exprime une réserve de façon professionnelle?','Cette option mérite d’être examinée, mais ses coûts restent à préciser.','The sentence acknowledges merit and states a specific limitation.','Cette option mérite de examinée.','The passive infinitive d’être examinée is needed.','Les coûts de cette option reste à préciser.','The plural subject coûts requires restent.']]);
-bank('projects','B',[
- ['Prepositions','Le projet est en cours ___ janvier.','depuis','Depuis marks an action that began in the past and continues.','pendant','Pendant marks a duration, not a starting month in this sentence.','envers','Envers describes an attitude toward someone.'],
- ['Verb forms','Nous ___ le rapport hier.','avons envoyé','The passé composé fits the completed event yesterday.','enverrons','The future conflicts with hier.','envoyons demain','Demain conflicts with hier and changes the time reference.'],
- ['Agreement','Les nouvelles dates sont ___.','confirmées','Dates is feminine plural, requiring confirmées.','confirmé','This is masculine singular.','confirmée','This is feminine singular.'],
- ['Vocabulary','Le rapport doit être remis avant la date ___.','limite','Date limite is the established expression for a deadline.','limiter','An infinitive cannot modify date this way.','limitation','Date limitation is not the correct expression.'],
- ['Prepositions','Nous devons terminer le travail ___ vendredi au plus tard.','d’ici','D’ici sets a deadline.','depuis','Depuis marks a past starting point, not a deadline.','durant de','This combination is ungrammatical.'],
- ['Agreement','Quelle section contient une erreur? « Les dépenses / dépasse le budget / prévu. »','dépasse le budget','The plural subject dépenses requires dépassent.','Les dépenses','This plural noun phrase is correct.','prévu','Prévu agrees with masculine singular budget.'],
- ['Cohesion','Les données manquent. ___, nous devons attendre avant de conclure.','Donc','Donc introduces the consequence of missing data.','Même si','Même si creates an incomplete subordinate sentence here.','Pour','Pour cannot introduce this conjugated clause.']]);
-bank('projects','C',[
- ['Verb forms','Si le fournisseur avait confirmé la date, nous ___ le calendrier.','aurions ajusté','An unreal past condition takes the past conditional.','aurons ajusté','This is future perfect, not past conditional.','avons ajusté','The passé composé would assert a completed fact, not this hypothetical result.'],
- ['Subjunctive','Le comité exige que le bilan ___ prêt lundi.','soit','Exiger que requires the subjunctive.','est','The indicative is not correct after this demand.','sera','The future indicative is not correct here.'],
- ['Pronouns','Le risque ___ nous devons tenir compte est important.','dont','Tenir compte de requires dont.','que','Que would replace a direct object; this expression takes de.','lequel','Lequel alone does not supply the required de.'],
- ['Agreement','Les sommes que nous avons ___ couvrent l’essai.','prévues','Sommes is the preceding feminine plural direct object.','prévu','Agreement is required with the preceding object.','prévus','This is masculine plural; sommes is feminine.'],
- ['Cohesion','Le lancement aura lieu, ___ toutes les validations soient terminées.','à condition que','This expresses a condition and takes the subjunctive.','malgré','Malgré requires a noun phrase.','grâce à','Grâce à also requires a noun phrase, not this clause.'],
- ['Agreement','Quelle section contient une erreur? « Les données / ont été vérifié / par l’analyste. »','ont été vérifié','In this passive form, vérifiées agrees with données.','Les données','This noun phrase is correctly plural.','par l’analyste','Par correctly introduces the agent.'],
- ['Vocabulary','Il faut ___ entre les deux options avant de lancer l’achat.','trancher','Trancher entre means to decide between alternatives.','tranchant','A present participle cannot follow il faut here.','tranche','The infinitive, not a conjugated form, is required.']]);
-bank('telework','B',[
- ['Prepositions','Elle travaille ___ distance deux jours par semaine.','à','À distance is the established expression.','de','De distance is not the phrase for working remotely.','en','En distance is not standard in this expression.'],
- ['Verb forms','Si vous êtes absent, ___ votre réservation.','annulez','The imperative for vous is annulez.','annulent','This agrees with ils, not an imperative addressed to vous.','annules','This is a tu form, not vous.'],
- ['Agreement','La connexion est ___.','stable','Stable agrees with a feminine singular subject without changing form.','stables','The adjective must be singular.','stabilité','Stabilité is a noun, not the adjective required here.'],
- ['Pronouns','Le bureau est libre. Vous pouvez ___ utiliser.','l’','Utiliser takes a direct object; le becomes l’ before a vowel.','lui','Lui is an indirect object pronoun.','leur','Leur refers to indirect plural recipients.'],
- ['Vocabulary','Veuillez ___ votre disponibilité dans le calendrier.','indiquer','Veuillez takes an infinitive; indiquer fits the meaning.','indication','This noun cannot follow veuillez.','indiquez','A second imperative cannot follow veuillez directly.'],
- ['Agreement','Quelle section contient une erreur? « Les postes disponibles / est réservés / aux visiteurs. »','est réservés','The plural subject requires sont réservés.','Les postes disponibles','All three words agree in the plural.','aux visiteurs','À + les correctly contracts to aux.'],
- ['Cohesion','La demande n’est pas urgente; vous pouvez ___ répondre demain.','donc','Donc connects the lack of urgency to the later response.','malgré','Malgré cannot act as an adverb between pouvez and répondre.','afin','Afin must be followed by de or que in a purpose construction.']]);
-bank('telework','C',[
- ['Subjunctive','Il est préférable que vous ___ votre disponibilité.','précisiez','Il est préférable que takes the subjunctive.','précisez','Précisez is indicative or imperative, not subjunctive.','préciserez','The future is not appropriate after this expression.'],
- ['Pronouns','L’outil ___ nous nous servons sera remplacé.','dont','Se servir de requires dont.','que','Que cannot replace the de complement.','où','Où would refer to a location or time.'],
- ['Agreement','Les plages que nous avons ___ conviennent à tous.','retenues','The preceding direct object plages is feminine plural.','retenu','The participle must agree with the preceding object.','retenus','The masculine plural does not agree with plages.'],
- ['Verb forms','Si les horaires se recoupaient, les échanges ___ plus simples.','seraient','A hypothetical condition in the imperfect takes the conditional result.','seront','The future does not fit this hypothetical pairing.','sont été','Sont été is not a valid verb form.'],
- ['Cohesion','La mesure ne concerne ___ les employés de cette unité.','que','Ne… que restricts the scope to only these employees.','aucun','Aucun cannot precede the definite plural phrase this way.','rien','Rien cannot serve as a determiner before les employés.'],
- ['Agreement','Quelle section contient une erreur? « Les modalités / de cet essai / sera révisées en juin. »','sera révisées en juin','The plural subject requires seront révisées.','Les modalités','This plural noun phrase is correct.','de cet essai','Cet is correctly used before masculine essai beginning with a vowel.'],
- ['Register','Quelle proposition est correcte et nuancée?','Nous pourrions fixer une plage commune, sans uniformiser tous les horaires.','The conditional makes a proposal and the second phrase limits its scope.','Nous pourrions fixons une plage commune.','Pourrions requires the infinitive fixer.','Nous pourrait fixer une plage commune.','Nous requires pourrions, not pourrait.']]);
-bank('leadership','B',[
- ['Verb forms','La gestionnaire ___ les priorités demain.','présentera','The singular future agrees with gestionnaire and demain.','présenteront','This plural future form does not agree with the singular subject gestionnaire.','présenterons','This is the nous form, not the form for la gestionnaire.'],
- ['Prepositions','Merci ___ votre contribution.','de','Merci de + noun is correct here.','à de','These prepositions cannot combine here.','envers','Envers does not introduce thanks in this construction.'],
- ['Agreement','Les attentes doivent être ___.','claires','Attentes is feminine plural.','clair','Masculine singular does not agree.','claire','Feminine singular does not agree with a plural subject.'],
- ['Pronouns','Léa coordonne le projet. Nous ___ transmettons nos suggestions.','lui','Transmettre à Léa uses the indirect pronoun lui.','la','La is a direct object pronoun; suggestions is the direct object.','elle','A subject pronoun cannot appear in this object position.'],
- ['Vocabulary','Nous allons ___ les priorités ensemble.','définir','Allons takes an infinitive, and définir means to set or define.','définition','A noun cannot follow allons in this future construction.','définissons','The conjugated nous form cannot follow allons.'],
- ['Agreement','Quelle section contient une erreur? « Chaque employé / préparent deux exemples / avant l’entretien. »','préparent deux exemples','Chaque employé is singular and requires prépare.','Chaque employé','Chaque correctly takes a singular noun.','avant l’entretien','The temporal prepositional phrase is correct.'],
- ['Register','Quelle demande est correcte et courtoise?','Pourriez-vous préciser les attentes?','The conditional request is grammatical and polite.','Pourriez-vous précisez les attentes?','Pourriez-vous takes the infinitive préciser.','Vous pourriez précisions les attentes?','Précisions cannot follow pourriez; an infinitive is required.']]);
-bank('leadership','C',[
- ['Subjunctive','Il importe que les critères ___ explicites.','soient','Il importe que requires the subjunctive plural soient.','sont','Sont is indicative.','seront','Seront is future indicative.'],
- ['Pronouns','L’autonomie ___ elle dispose est importante.','dont','Disposer de requires dont.','que','Que does not replace the de complement.','où','Où cannot represent the abstract object of disposer de here.'],
- ['Agreement','Les contributions qu’il a ___ méritent d’être reconnues.','soulignées','Contributions is the preceding feminine plural direct object.','souligné','The preceding object requires agreement.','soulignés','The masculine plural does not agree with contributions.'],
- ['Verb forms','Si nous avions expliqué les critères, l’équipe ___ mieux compris la décision.','aurait','The result of an unreal past condition takes the past conditional aurait compris.','aura','Aura compris is future perfect.','avait','Avait compris is plus-que-parfait, not the hypothetical result here.'],
- ['Cohesion','La consultation est utile; elle ne garantit pas ___ l’unanimité.','pour autant','Pour autant qualifies what does not automatically follow from usefulness.','afin de','Afin de requires an infinitive, not l’unanimité.','parce que','Parce que must introduce a clause, not this noun alone.'],
- ['Agreement','Quelle section contient une erreur? « Les critères / que nous avons défini / sont publics. »','que nous avons défini','Définis agrees with preceding masculine plural critères.','Les critères','The noun phrase is correct.','sont publics','Publics correctly agrees with critères.'],
- ['Vocabulary','Une décision doit être ___ par des éléments vérifiables.','étayée','Étayer means to support with evidence; the participle agrees with décision.','étayer','The passive être requires a past participle.','étayés','This masculine plural form does not agree with décision.']]);
-bank('conflict','B',[
- ['Prepositions','Nous discuterons ___ la répartition des tâches.','de','Discuter de introduces the topic of discussion.','à','Discuter à does not introduce a topic.','chez','Chez marks a location, not the topic.'],
- ['Verb forms','Chaque personne ___ un exemple précis.','apportera','The singular future agrees with chaque personne.','apporteront','This future form is plural.','apporterons','This is the nous form.'],
- ['Agreement','Les observations sont ___.','utiles','The adjective agrees with plural observations.','utile','A singular adjective does not agree.','utilité','A noun cannot fill this adjective position.'],
- ['Vocabulary','Avant de conclure, il faut ___ les faits.','vérifier','Il faut takes an infinitive; vérifier fits checking facts.','vérification','This noun cannot introduce les faits in this construction.','vérifiez','This imperative cannot follow il faut directly.'],
- ['Cohesion','Les avis diffèrent. ___, une solution commune reste possible.','Toutefois','Toutefois introduces a possibility despite the disagreement.','Parce que','This would create an incomplete subordinate clause.','Malgré','Malgré requires a noun phrase, not this full clause.'],
- ['Agreement','Quelle section contient une erreur? « Les deux collègues / accepte la proposition / pour deux semaines. »','accepte la proposition','The plural subject requires acceptent.','Les deux collègues','The plural noun phrase is correct.','pour deux semaines','This phrase correctly expresses the duration.'],
- ['Register','Quelle phrase décrit un fait de façon neutre?','Le dossier m’a été transmis après la date convenue.','It describes an observable timing issue without a character judgment.','Tu es toujours irresponsable.','This is a personal generalization, not a neutral description of a fact.','Personne ne fait jamais aucun effort ici.','This sweeping judgment does not identify a specific event.']]);
-bank('conflict','C',[
- ['Subjunctive','Bien que nos avis ___ différents, nous cherchons un accord.','soient','Bien que requires the subjunctive plural.','sont','Sont is indicative.','seront','Seront is future indicative.'],
- ['Pronouns','Le problème ___ nous parlons concerne deux équipes.','dont','Parler de requires dont.','que','The verb construction needs de, not a direct relative object.','où','Où represents place or time, not the topic here.'],
- ['Agreement','Les solutions que nous avons ___ seront testées.','proposées','The preceding direct object solutions is feminine plural.','proposé','The participle must agree with the preceding object.','proposés','The masculine plural does not agree with solutions.'],
- ['Verb forms','Si les attentes étaient explicites, nous ___ ces malentendus.','éviterions','Si + imparfait pairs with the conditional éviterions.','éviterons','The future does not fit this hypothetical construction.','évité','A past participle alone cannot serve as the conjugated verb.'],
- ['Subjunctive','L’essai se poursuivra à moins qu’un problème majeur ___.','survienne','À moins que takes the subjunctive; survienne is correct.','survient','Survient is indicative.','surviendra','Surviendra is future indicative.'],
- ['Agreement','Quelle section contient une erreur? « La procédure / a été approuvée / par les deux responsable. »','par les deux responsable','The noun after les deux must be plural: responsables.','La procédure','The singular feminine noun phrase is correct.','a été approuvée','The passive participle correctly agrees with procédure.'],
- ['Cohesion','L’accord reste limité; il constitue ___ une avancée.','néanmoins','Néanmoins concedes the limitation while recognizing progress.','afin que','Afin que introduces a clause, not the noun phrase une avancée.','malgré de','Malgré de is not grammatical here.']]);
-export const writingQuestions=questions;
+import type { Question } from '../types';
+export const writingQuestions: Question[] = [
+  {
+    "id": "wq-001",
+    "theme": "training",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Formation professionnelle] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-002",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Travail d’équipe] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-003",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Gestion de projet] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-004",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Travail à distance] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-005",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Direction et leadership] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-006",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Règlement des différends] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-007",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Politiques et gouvernance] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-008",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Approvisionnement et contrats] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-009",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Langues officielles] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-010",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Mobilisation des citoyens] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-011",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Numérique et technologies] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-012",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Gestion financière] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-013",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Dotation et RH] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-014",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Gestion de crise] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-015",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Vérification et risques] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-016",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Planification stratégique] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-017",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Prestation de services] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-018",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Valeurs et éthique] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-019",
+    "theme": "training",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Formation professionnelle] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-020",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Travail d’équipe] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-021",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Gestion de projet] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-022",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Travail à distance] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-023",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Direction et leadership] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-024",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Règlement des différends] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-025",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Politiques et gouvernance] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-026",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Approvisionnement et contrats] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-027",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Langues officielles] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-028",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Mobilisation des citoyens] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-029",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Numérique et technologies] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-030",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Gestion financière] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-031",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Dotation et RH] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-032",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Gestion de crise] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-033",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Vérification et risques] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-034",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Planification stratégique] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-035",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Prestation de services] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-036",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Valeurs et éthique] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-037",
+    "theme": "training",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Formation professionnelle] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-038",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Travail d’équipe] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-039",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Gestion de projet] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-040",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Travail à distance] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-041",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Direction et leadership] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-042",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Règlement des différends] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-043",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Politiques et gouvernance] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-044",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Approvisionnement et contrats] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-045",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Langues officielles] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-046",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Mobilisation des citoyens] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-047",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Numérique et technologies] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-048",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Gestion financière] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-049",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Dotation et RH] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-050",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Gestion de crise] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-051",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Vérification et risques] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-052",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Planification stratégique] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-053",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Prestation de services] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-054",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Valeurs et éthique] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-055",
+    "theme": "training",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Formation professionnelle] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-056",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Travail d’équipe] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-057",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Gestion de projet] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-058",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Travail à distance] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-059",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Direction et leadership] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-060",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Règlement des différends] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-061",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Politiques et gouvernance] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-062",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Approvisionnement et contrats] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-063",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Langues officielles] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-064",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Mobilisation des citoyens] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-065",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Numérique et technologies] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-066",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Gestion financière] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-067",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Dotation et RH] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-068",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Gestion de crise] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-069",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Vérification et risques] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-070",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Planification stratégique] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-071",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Prestation de services] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-072",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Valeurs et éthique] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-073",
+    "theme": "training",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Formation professionnelle] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-074",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Travail d’équipe] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-075",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Gestion de projet] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-076",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Travail à distance] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-077",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Direction et leadership] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-078",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Règlement des différends] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-079",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Politiques et gouvernance] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-080",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Approvisionnement et contrats] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-081",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Langues officielles] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-082",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Mobilisation des citoyens] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-083",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Numérique et technologies] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-084",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Gestion financière] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-085",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Dotation et RH] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-086",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Gestion de crise] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-087",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Vérification et risques] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-088",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Planification stratégique] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-089",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Prestation de services] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-090",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Valeurs et éthique] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-091",
+    "theme": "training",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Formation professionnelle] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-092",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Travail d’équipe] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-093",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Gestion de projet] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-094",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Travail à distance] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-095",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Direction et leadership] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-096",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Règlement des différends] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-097",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Politiques et gouvernance] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-098",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Approvisionnement et contrats] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-099",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Langues officielles] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-100",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Mobilisation des citoyens] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-101",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Numérique et technologies] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-102",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Gestion financière] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-103",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Dotation et RH] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-104",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Gestion de crise] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-105",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Vérification et risques] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-106",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Planification stratégique] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-107",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Prestation de services] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-108",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Valeurs et éthique] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-109",
+    "theme": "training",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Formation professionnelle] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-110",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Travail d’équipe] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-111",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Gestion de projet] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-112",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Travail à distance] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-113",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Direction et leadership] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-114",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Règlement des différends] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-115",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Politiques et gouvernance] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-116",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Approvisionnement et contrats] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-117",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Langues officielles] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-118",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Mobilisation des citoyens] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-119",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Numérique et technologies] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-120",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Gestion financière] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-121",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Dotation et RH] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-122",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Gestion de crise] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-123",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Vérification et risques] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-124",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Planification stratégique] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-125",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Prestation de services] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-126",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Valeurs et éthique] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-127",
+    "theme": "training",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Formation professionnelle] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-128",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Travail d’équipe] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-129",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Gestion de projet] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-130",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Travail à distance] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-131",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Direction et leadership] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-132",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Règlement des différends] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-133",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Politiques et gouvernance] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-134",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Approvisionnement et contrats] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-135",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Langues officielles] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-136",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Mobilisation des citoyens] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-137",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Numérique et technologies] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-138",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Gestion financière] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-139",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Dotation et RH] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-140",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Gestion de crise] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-141",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Vérification et risques] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-142",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Planification stratégique] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-143",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Prestation de services] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-144",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Valeurs et éthique] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-145",
+    "theme": "training",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Formation professionnelle] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-146",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Travail d’équipe] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-147",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Gestion de projet] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-148",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Travail à distance] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-149",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Direction et leadership] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-150",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Règlement des différends] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-151",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Politiques et gouvernance] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-152",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Approvisionnement et contrats] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-153",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Langues officielles] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-154",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Mobilisation des citoyens] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-155",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Numérique et technologies] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-156",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Gestion financière] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-157",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Dotation et RH] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-158",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Gestion de crise] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-159",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Vérification et risques] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-160",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Planification stratégique] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-161",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Prestation de services] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-162",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Valeurs et éthique] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-163",
+    "theme": "training",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Formation professionnelle] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-164",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Travail d’équipe] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-165",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Gestion de projet] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-166",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Travail à distance] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-167",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Direction et leadership] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-168",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Règlement des différends] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-169",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Politiques et gouvernance] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-170",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Approvisionnement et contrats] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-171",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Langues officielles] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-172",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Mobilisation des citoyens] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-173",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Numérique et technologies] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-174",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Gestion financière] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-175",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Dotation et RH] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-176",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Gestion de crise] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-177",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Vérification et risques] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-178",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Planification stratégique] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-179",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Prestation de services] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-180",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Valeurs et éthique] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-181",
+    "theme": "training",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Formation professionnelle] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-182",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Travail d’équipe] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-183",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Gestion de projet] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-184",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Travail à distance] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-185",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Direction et leadership] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-186",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Règlement des différends] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-187",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Politiques et gouvernance] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-188",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Approvisionnement et contrats] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-189",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Langues officielles] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-190",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Mobilisation des citoyens] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-191",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Numérique et technologies] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-192",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Gestion financière] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-193",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Dotation et RH] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-194",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Gestion de crise] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-195",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Vérification et risques] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-196",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Planification stratégique] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-197",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Prestation de services] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-198",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Valeurs et éthique] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-199",
+    "theme": "training",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Formation professionnelle] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-200",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Travail d’équipe] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-201",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Gestion de projet] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-202",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Travail à distance] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-203",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Direction et leadership] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-204",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Règlement des différends] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-205",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Politiques et gouvernance] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-206",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Approvisionnement et contrats] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-207",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Langues officielles] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-208",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Mobilisation des citoyens] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-209",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Numérique et technologies] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-210",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Gestion financière] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-211",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Dotation et RH] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-212",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Gestion de crise] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-213",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Vérification et risques] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-214",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Planification stratégique] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-215",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Prestation de services] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-216",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Valeurs et éthique] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-217",
+    "theme": "training",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Formation professionnelle] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-218",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Travail d’équipe] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-219",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Gestion de projet] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-220",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Travail à distance] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-221",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Direction et leadership] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-222",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Règlement des différends] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-223",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Politiques et gouvernance] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-224",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Approvisionnement et contrats] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-225",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Langues officielles] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-226",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Mobilisation des citoyens] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-227",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Numérique et technologies] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-228",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Gestion financière] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-229",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Dotation et RH] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-230",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Gestion de crise] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-231",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Vérification et risques] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-232",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Planification stratégique] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-233",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Prestation de services] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-234",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Valeurs et éthique] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-235",
+    "theme": "training",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Formation professionnelle] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-236",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Travail d’équipe] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-237",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Gestion de projet] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-238",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Travail à distance] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-239",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Direction et leadership] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-240",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Règlement des différends] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-241",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Politiques et gouvernance] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-242",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Approvisionnement et contrats] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-243",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Langues officielles] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-244",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Mobilisation des citoyens] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-245",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Numérique et technologies] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-246",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Gestion financière] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-247",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Dotation et RH] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-248",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Gestion de crise] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-249",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Vérification et risques] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-250",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Planification stratégique] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-251",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Prestation de services] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-252",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Valeurs et éthique] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-253",
+    "theme": "training",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Formation professionnelle] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-254",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Travail d’équipe] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-255",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Gestion de projet] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-256",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Travail à distance] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-257",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Direction et leadership] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-258",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Règlement des différends] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-259",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Politiques et gouvernance] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-260",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Approvisionnement et contrats] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-261",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Langues officielles] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-262",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Mobilisation des citoyens] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-263",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Numérique et technologies] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-264",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Gestion financière] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-265",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Dotation et RH] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-266",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Gestion de crise] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-267",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Vérification et risques] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-268",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Planification stratégique] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-269",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Prestation de services] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-270",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Valeurs et éthique] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-271",
+    "theme": "training",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Formation professionnelle] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-272",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Travail d’équipe] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-273",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Gestion de projet] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-274",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Travail à distance] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-275",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Direction et leadership] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-276",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Règlement des différends] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-277",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Politiques et gouvernance] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-278",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Approvisionnement et contrats] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-279",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Langues officielles] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-280",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Mobilisation des citoyens] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-281",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Numérique et technologies] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-282",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Gestion financière] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-283",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Dotation et RH] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-284",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Gestion de crise] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-285",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Vérification et risques] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-286",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Planification stratégique] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-287",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Prestation de services] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-288",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Valeurs et éthique] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-289",
+    "theme": "training",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Formation professionnelle] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-290",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Travail d’équipe] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-291",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Gestion de projet] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-292",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Travail à distance] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-293",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Direction et leadership] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-294",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Règlement des différends] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-295",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Politiques et gouvernance] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-296",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Approvisionnement et contrats] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-297",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Langues officielles] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-298",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Mobilisation des citoyens] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-299",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Numérique et technologies] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-300",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Gestion financière] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-301",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Dotation et RH] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-302",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Gestion de crise] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-303",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Vérification et risques] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-304",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Planification stratégique] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-305",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Prestation de services] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-306",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Valeurs et éthique] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-307",
+    "theme": "training",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Formation professionnelle] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-308",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Travail d’équipe] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-309",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Gestion de projet] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-310",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Travail à distance] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-311",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Direction et leadership] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-312",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Règlement des différends] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-313",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Politiques et gouvernance] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-314",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Approvisionnement et contrats] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-315",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Langues officielles] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-316",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Mobilisation des citoyens] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-317",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Numérique et technologies] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-318",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Gestion financière] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-319",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Dotation et RH] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-320",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Gestion de crise] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-321",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Vérification et risques] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-322",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Planification stratégique] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-323",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Prestation de services] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-324",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Valeurs et éthique] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-325",
+    "theme": "training",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Formation professionnelle] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-326",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Travail d’équipe] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-327",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Gestion de projet] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-328",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Travail à distance] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-329",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Direction et leadership] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-330",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Règlement des différends] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-331",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Politiques et gouvernance] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-332",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Approvisionnement et contrats] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-333",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Langues officielles] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-334",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Mobilisation des citoyens] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-335",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Numérique et technologies] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-336",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Gestion financière] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-337",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Dotation et RH] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-338",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Gestion de crise] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-339",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Vérification et risques] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-340",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Planification stratégique] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-341",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Prestation de services] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-342",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Valeurs et éthique] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-343",
+    "theme": "training",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Formation professionnelle] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-344",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Travail d’équipe] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-345",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Gestion de projet] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-346",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Travail à distance] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-347",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Direction et leadership] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-348",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Règlement des différends] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-349",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Politiques et gouvernance] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-350",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Approvisionnement et contrats] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-351",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Langues officielles] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-352",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Mobilisation des citoyens] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-353",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Numérique et technologies] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-354",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Gestion financière] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-355",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Dotation et RH] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-356",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Gestion de crise] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-357",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Vérification et risques] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-358",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Planification stratégique] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-359",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Prestation de services] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-360",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Valeurs et éthique] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-361",
+    "theme": "training",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Formation professionnelle] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-362",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Travail d’équipe] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-363",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Gestion de projet] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-364",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Travail à distance] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-365",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Direction et leadership] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-366",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Règlement des différends] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-367",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Politiques et gouvernance] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-368",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Approvisionnement et contrats] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-369",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Langues officielles] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-370",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Mobilisation des citoyens] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-371",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Numérique et technologies] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-372",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Gestion financière] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-373",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Dotation et RH] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-374",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Gestion de crise] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-375",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Vérification et risques] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-376",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Planification stratégique] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-377",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Prestation de services] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-378",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Valeurs et éthique] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-379",
+    "theme": "training",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Formation professionnelle] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-380",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Travail d’équipe] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-381",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Gestion de projet] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-382",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Travail à distance] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-383",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Direction et leadership] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-384",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Règlement des différends] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-385",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Politiques et gouvernance] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-386",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Approvisionnement et contrats] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-387",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Langues officielles] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-388",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Mobilisation des citoyens] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-389",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Numérique et technologies] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-390",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Gestion financière] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-391",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Dotation et RH] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-392",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Gestion de crise] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-393",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Vérification et risques] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-394",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Planification stratégique] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-395",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Prestation de services] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-396",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Valeurs et éthique] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-397",
+    "theme": "training",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Formation professionnelle] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-398",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Travail d’équipe] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-399",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Gestion de projet] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-400",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Travail à distance] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-401",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Direction et leadership] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-402",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Règlement des différends] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-403",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Politiques et gouvernance] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-404",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Approvisionnement et contrats] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-405",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Langues officielles] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-406",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Mobilisation des citoyens] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-407",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Numérique et technologies] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-408",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Gestion financière] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-409",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Dotation et RH] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-410",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Gestion de crise] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-411",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Vérification et risques] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-412",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Planification stratégique] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-413",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Prestation de services] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-414",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Valeurs et éthique] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-415",
+    "theme": "training",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Formation professionnelle] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-416",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Travail d’équipe] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-417",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Gestion de projet] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-418",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Travail à distance] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-419",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Direction et leadership] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-420",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Règlement des différends] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-421",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Politiques et gouvernance] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-422",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Approvisionnement et contrats] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-423",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Langues officielles] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-424",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Mobilisation des citoyens] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-425",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Numérique et technologies] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-426",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Gestion financière] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-427",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Dotation et RH] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-428",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Gestion de crise] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-429",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Vérification et risques] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-430",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Planification stratégique] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-431",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Prestation de services] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-432",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Valeurs et éthique] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-433",
+    "theme": "training",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Formation professionnelle] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-434",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Travail d’équipe] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-435",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Gestion de projet] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-436",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Travail à distance] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-437",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Direction et leadership] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-438",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Règlement des différends] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-439",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Politiques et gouvernance] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-440",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Approvisionnement et contrats] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-441",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Langues officielles] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-442",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Mobilisation des citoyens] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-443",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Numérique et technologies] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-444",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Gestion financière] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-445",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Dotation et RH] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-446",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Gestion de crise] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-447",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Vérification et risques] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-448",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Planification stratégique] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-449",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Prestation de services] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-450",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Valeurs et éthique] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-451",
+    "theme": "training",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Formation professionnelle] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-452",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Travail d’équipe] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-453",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Gestion de projet] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-454",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Travail à distance] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-455",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Direction et leadership] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-456",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Règlement des différends] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-457",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Politiques et gouvernance] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-458",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Approvisionnement et contrats] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-459",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Langues officielles] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-460",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Mobilisation des citoyens] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-461",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Numérique et technologies] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-462",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Gestion financière] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-463",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Dotation et RH] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-464",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Gestion de crise] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-465",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Vérification et risques] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-466",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Planification stratégique] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-467",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Prestation de services] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-468",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Valeurs et éthique] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-469",
+    "theme": "training",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Formation professionnelle] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-470",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Travail d’équipe] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-471",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Gestion de projet] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-472",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Travail à distance] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-473",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Direction et leadership] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-474",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Règlement des différends] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-475",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Politiques et gouvernance] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-476",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Approvisionnement et contrats] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-477",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Langues officielles] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-478",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Mobilisation des citoyens] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-479",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Numérique et technologies] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-480",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Gestion financière] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-481",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Dotation et RH] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-482",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Gestion de crise] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-483",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Vérification et risques] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-484",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Planification stratégique] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-485",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Prestation de services] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-486",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Valeurs et éthique] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-487",
+    "theme": "training",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Formation professionnelle] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-488",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Travail d’équipe] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-489",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Gestion de projet] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-490",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Travail à distance] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-491",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Direction et leadership] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-492",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Règlement des différends] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-493",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Politiques et gouvernance] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-494",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Approvisionnement et contrats] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-495",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Langues officielles] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-496",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Mobilisation des citoyens] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-497",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Numérique et technologies] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-498",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Gestion financière] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-499",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Dotation et RH] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-500",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Gestion de crise] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-501",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Vérification et risques] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-502",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Planification stratégique] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-503",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Prestation de services] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-504",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Valeurs et éthique] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-505",
+    "theme": "training",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Formation professionnelle] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-506",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Travail d’équipe] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-507",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Gestion de projet] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-508",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Travail à distance] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-509",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Direction et leadership] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-510",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Règlement des différends] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-511",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Politiques et gouvernance] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-512",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Approvisionnement et contrats] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-513",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Langues officielles] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-514",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Mobilisation des citoyens] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-515",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Numérique et technologies] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-516",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Gestion financière] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-517",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Dotation et RH] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-518",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Gestion de crise] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-519",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Vérification et risques] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-520",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Planification stratégique] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-521",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Prestation de services] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-522",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Valeurs et éthique] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-523",
+    "theme": "training",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Formation professionnelle] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-524",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Travail d’équipe] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-525",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Gestion de projet] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-526",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Travail à distance] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-527",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Direction et leadership] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-528",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Règlement des différends] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-529",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Politiques et gouvernance] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-530",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Approvisionnement et contrats] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-531",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Langues officielles] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-532",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Mobilisation des citoyens] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-533",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Numérique et technologies] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-534",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Gestion financière] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-535",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Dotation et RH] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-536",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Gestion de crise] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-537",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Vérification et risques] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-538",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Planification stratégique] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-539",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Prestation de services] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-540",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Valeurs et éthique] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-541",
+    "theme": "training",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Formation professionnelle] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-542",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Travail d’équipe] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-543",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Gestion de projet] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-544",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Travail à distance] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-545",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Direction et leadership] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-546",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Règlement des différends] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-547",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Politiques et gouvernance] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-548",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Approvisionnement et contrats] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-549",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Langues officielles] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-550",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Mobilisation des citoyens] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-551",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Numérique et technologies] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-552",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Gestion financière] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-553",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Dotation et RH] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-554",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Gestion de crise] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-555",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Vérification et risques] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-556",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Planification stratégique] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-557",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Prestation de services] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-558",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Valeurs et éthique] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-559",
+    "theme": "training",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Formation professionnelle] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-560",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Travail d’équipe] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-561",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Gestion de projet] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-562",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Travail à distance] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-563",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Direction et leadership] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-564",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Règlement des différends] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-565",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Politiques et gouvernance] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-566",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Approvisionnement et contrats] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-567",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Langues officielles] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-568",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Mobilisation des citoyens] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-569",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Numérique et technologies] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-570",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Gestion financière] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-571",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Dotation et RH] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-572",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Gestion de crise] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-573",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Vérification et risques] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-574",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Planification stratégique] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-575",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Prestation de services] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-576",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Valeurs et éthique] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-577",
+    "theme": "training",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Formation professionnelle] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-578",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Travail d’équipe] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-579",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Gestion de projet] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-580",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Travail à distance] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-581",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Direction et leadership] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-582",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Règlement des différends] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-583",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Politiques et gouvernance] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-584",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Approvisionnement et contrats] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-585",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Langues officielles] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-586",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Mobilisation des citoyens] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-587",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Numérique et technologies] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-588",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Gestion financière] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-589",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Dotation et RH] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-590",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Gestion de crise] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-591",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Vérification et risques] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-592",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Planification stratégique] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-593",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Prestation de services] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-594",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Valeurs et éthique] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-595",
+    "theme": "training",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Formation professionnelle] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-596",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Travail d’équipe] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-597",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Gestion de projet] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-598",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Travail à distance] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-599",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Direction et leadership] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-600",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Règlement des différends] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-601",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Politiques et gouvernance] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-602",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Approvisionnement et contrats] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-603",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Langues officielles] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-604",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Mobilisation des citoyens] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-605",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Numérique et technologies] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-606",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Gestion financière] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-607",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Dotation et RH] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-608",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Gestion de crise] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-609",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Vérification et risques] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-610",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Planification stratégique] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-611",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Prestation de services] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-612",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Valeurs et éthique] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-613",
+    "theme": "training",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Formation professionnelle] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-614",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Travail d’équipe] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-615",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Gestion de projet] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-616",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Travail à distance] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-617",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Direction et leadership] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-618",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Règlement des différends] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-619",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Politiques et gouvernance] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-620",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Approvisionnement et contrats] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-621",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Langues officielles] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-622",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Mobilisation des citoyens] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-623",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Numérique et technologies] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-624",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Gestion financière] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-625",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Dotation et RH] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-626",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Gestion de crise] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-627",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Vérification et risques] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-628",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Planification stratégique] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-629",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Prestation de services] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-630",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Valeurs et éthique] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-631",
+    "theme": "training",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Formation professionnelle] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-632",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Travail d’équipe] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-633",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Gestion de projet] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-634",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Travail à distance] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-635",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Direction et leadership] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-636",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Règlement des différends] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-637",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Politiques et gouvernance] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-638",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Approvisionnement et contrats] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-639",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Langues officielles] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-640",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Mobilisation des citoyens] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-641",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Numérique et technologies] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-642",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Gestion financière] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-643",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Dotation et RH] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-644",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Gestion de crise] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-645",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Vérification et risques] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-646",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Planification stratégique] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-647",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Prestation de services] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-648",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Valeurs et éthique] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-649",
+    "theme": "training",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Formation professionnelle] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-650",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Travail d’équipe] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-651",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Gestion de projet] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-652",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Travail à distance] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-653",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Direction et leadership] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-654",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Règlement des différends] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-655",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Politiques et gouvernance] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-656",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Approvisionnement et contrats] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-657",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Langues officielles] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-658",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Mobilisation des citoyens] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-659",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Numérique et technologies] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-660",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Gestion financière] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-661",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Dotation et RH] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-662",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Gestion de crise] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-663",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Vérification et risques] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-664",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Planification stratégique] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-665",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Prestation de services] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-666",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Valeurs et éthique] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-667",
+    "theme": "training",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Formation professionnelle] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-668",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Travail d’équipe] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-669",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Gestion de projet] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-670",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Travail à distance] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-671",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Direction et leadership] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-672",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Règlement des différends] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-673",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Politiques et gouvernance] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-674",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Approvisionnement et contrats] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-675",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Langues officielles] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-676",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Mobilisation des citoyens] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-677",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Numérique et technologies] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-678",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Gestion financière] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-679",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Dotation et RH] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-680",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Gestion de crise] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-681",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Vérification et risques] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-682",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Planification stratégique] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-683",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Prestation de services] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-684",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Valeurs et éthique] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-685",
+    "theme": "training",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Formation professionnelle] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-686",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Travail d’équipe] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-687",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Gestion de projet] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-688",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Travail à distance] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-689",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Direction et leadership] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-690",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Règlement des différends] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-691",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Politiques et gouvernance] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-692",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Approvisionnement et contrats] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-693",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Langues officielles] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-694",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Mobilisation des citoyens] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-695",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Numérique et technologies] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-696",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Gestion financière] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-697",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Dotation et RH] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-698",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Gestion de crise] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-699",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Vérification et risques] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-700",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Planification stratégique] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-701",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Prestation de services] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-702",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Valeurs et éthique] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-703",
+    "theme": "training",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Formation professionnelle] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-704",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Travail d’équipe] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-705",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Gestion de projet] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-706",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Travail à distance] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-707",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Direction et leadership] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-708",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Règlement des différends] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-709",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Politiques et gouvernance] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-710",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Approvisionnement et contrats] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-711",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Langues officielles] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-712",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Mobilisation des citoyens] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-713",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Numérique et technologies] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-714",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Gestion financière] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-715",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Dotation et RH] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-716",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Gestion de crise] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-717",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Vérification et risques] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-718",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Planification stratégique] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-719",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Prestation de services] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-720",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Valeurs et éthique] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-721",
+    "theme": "training",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Formation professionnelle] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-722",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Travail d’équipe] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-723",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Gestion de projet] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-724",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Travail à distance] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-725",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Direction et leadership] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-726",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Règlement des différends] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-727",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Politiques et gouvernance] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-728",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Approvisionnement et contrats] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-729",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Langues officielles] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-730",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Mobilisation des citoyens] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-731",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Numérique et technologies] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-732",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Gestion financière] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-733",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Dotation et RH] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-734",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Gestion de crise] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-735",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Vérification et risques] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-736",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Planification stratégique] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-737",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Prestation de services] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-738",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Valeurs et éthique] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-739",
+    "theme": "training",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Formation professionnelle] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-740",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Travail d’équipe] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-741",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Gestion de projet] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-742",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Travail à distance] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-743",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Direction et leadership] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-744",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Règlement des différends] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-745",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Politiques et gouvernance] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-746",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Approvisionnement et contrats] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-747",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Langues officielles] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-748",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Mobilisation des citoyens] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-749",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Numérique et technologies] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-750",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Gestion financière] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-751",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Dotation et RH] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-752",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Gestion de crise] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-753",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Vérification et risques] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-754",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Planification stratégique] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-755",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Prestation de services] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-756",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Valeurs et éthique] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-757",
+    "theme": "training",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Formation professionnelle] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-758",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Travail d’équipe] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-759",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Gestion de projet] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-760",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Travail à distance] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-761",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Direction et leadership] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-762",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Règlement des différends] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-763",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Politiques et gouvernance] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-764",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Approvisionnement et contrats] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-765",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Langues officielles] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-766",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Mobilisation des citoyens] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-767",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Numérique et technologies] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-768",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Gestion financière] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-769",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Dotation et RH] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-770",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Gestion de crise] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-771",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Vérification et risques] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-772",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Planification stratégique] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-773",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Prestation de services] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-774",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Valeurs et éthique] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-775",
+    "theme": "training",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Formation professionnelle] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-776",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Travail d’équipe] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-777",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Gestion de projet] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-778",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Travail à distance] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-779",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Direction et leadership] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-780",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Règlement des différends] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-781",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Politiques et gouvernance] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-782",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Approvisionnement et contrats] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-783",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Langues officielles] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-784",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Mobilisation des citoyens] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-785",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Numérique et technologies] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-786",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Gestion financière] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-787",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Dotation et RH] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-788",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Gestion de crise] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-789",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Vérification et risques] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-790",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Planification stratégique] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-791",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Prestation de services] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-792",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Valeurs et éthique] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-793",
+    "theme": "training",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Formation professionnelle] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-794",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Travail d’équipe] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-795",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Gestion de projet] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-796",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Travail à distance] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-797",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Direction et leadership] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-798",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Règlement des différends] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-799",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Politiques et gouvernance] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-800",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Approvisionnement et contrats] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-801",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Langues officielles] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-802",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Mobilisation des citoyens] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-803",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Numérique et technologies] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-804",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Gestion financière] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-805",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Dotation et RH] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-806",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Gestion de crise] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-807",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Vérification et risques] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-808",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Planification stratégique] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-809",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Prestation de services] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-810",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Valeurs et éthique] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-811",
+    "theme": "training",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Formation professionnelle] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-812",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Travail d’équipe] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-813",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Gestion de projet] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-814",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Travail à distance] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-815",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Direction et leadership] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-816",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Règlement des différends] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-817",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Politiques et gouvernance] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-818",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Approvisionnement et contrats] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-819",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Langues officielles] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-820",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Mobilisation des citoyens] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-821",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Numérique et technologies] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-822",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Gestion financière] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-823",
+    "theme": "staffing",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Dotation et RH] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-824",
+    "theme": "crisis-mgmt",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Gestion de crise] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-825",
+    "theme": "audit",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Vérification et risques] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-826",
+    "theme": "strategic-planning",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Planification stratégique] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-827",
+    "theme": "services-canada",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Prestation de services] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-828",
+    "theme": "values-ethics",
+    "skill": "writing",
+    "level": "C",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Valeurs et éthique] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-829",
+    "theme": "training",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Formation professionnelle] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-830",
+    "theme": "teamwork",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Travail d’équipe] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-831",
+    "theme": "projects",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Gestion de projet] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-832",
+    "theme": "telework",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Travail à distance] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  },
+  {
+    "id": "wq-833",
+    "theme": "leadership",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Preposition and infinitive agreement after purpose markers",
+    "prompt": "[Direction et leadership] Choisissez la préposition correcte : « Pour ___ la formation, veuillez remplir le formulaire. »",
+    "options": [
+      "suivre",
+      "suivi",
+      "suivra"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Après la préposition « pour », le verbe se met à l'infinitif (« suivre ») quand le sujet reste le même.",
+      "« Suivi » est un participe passé ou un nom, incompatible immédiatement après « pour ».",
+      "« Suivra » est au futur simple et ne peut s'insérer directement après une préposition."
+    ]
+  },
+  {
+    "id": "wq-834",
+    "theme": "conflict",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Subjunctive mood after concession and purpose conjunctions",
+    "prompt": "[Règlement des différends] Choisissez la forme correcte : « Bien que l'équipe ___ motivée, le projet accuse un léger retard. »",
+    "options": [
+      "soit",
+      "est",
+      "sera"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Bien que » exige le subjonctif (« soit »).",
+      "« Est » est à l'indicatif, ce qui ne convient pas après « bien que ».",
+      "« Sera » est au futur, alors que la concession nécessite le subjonctif."
+    ]
+  },
+  {
+    "id": "wq-835",
+    "theme": "policy",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Past participle agreement with preceding direct object",
+    "prompt": "[Politiques et gouvernance] Choisissez la forme correcte : « Les directives que la direction a ___ seront publiées demain. »",
+    "options": [
+      "adoptées",
+      "adopté",
+      "adopter"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le participe passé « adoptées » s'accorde avec le COD « que » (mis pour « les directives », féminin pluriel) placé avant l'auxiliaire avoir.",
+      "« Adopté » au masculin singulier ne tient pas compte de l'accord avec le COD placé avant le verbe.",
+      "« Adopter » est à l'infinitif et ne peut pas servir de participe passé."
+    ]
+  },
+  {
+    "id": "wq-836",
+    "theme": "procurement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Hypothetical condition structures (si + imparfait / plus-que-parfait)",
+    "prompt": "[Approvisionnement et contrats] Complétez la phrase hypothétique : « Si nous ___ les données plus tôt, nous aurions évité cette erreur. »",
+    "options": [
+      "avions reçu",
+      "avons reçu",
+      "recevons"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Pour exprimer une hypothèse non réalisée dans le passé, on utilise si + plus-que-parfait (« avions reçu ») suivi du conditionnel passé.",
+      "« Avons reçu » au passé composé ne respecte pas la concordance des temps de l'hypothèse au passé.",
+      "« Recevons » au présent ne correspond pas à l'action conditionnelle passée."
+    ]
+  },
+  {
+    "id": "wq-837",
+    "theme": "bilingualism",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Correct relative pronoun selection (dont, auquel, duquel)",
+    "prompt": "[Langues officielles] Complétez avec le pronom relatif approprié : « Le rapport ___ nous avons discuté hier contient plusieurs recommandations. »",
+    "options": [
+      "dont",
+      "lequel",
+      "auquel"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le verbe « discuter de » nécessite le pronom relatif « dont » (« discuter de quelque chose »).",
+      "« Lequel » s'utilise après une préposition (par exemple « sur lequel ») mais pas pour remplacer « de ».",
+      "« Auquel » s'utilise avec les verbes suivis de la préposition « à »."
+    ]
+  },
+  {
+    "id": "wq-838",
+    "theme": "public-engagement",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Pronoun placement for direct and indirect object pronouns",
+    "prompt": "[Mobilisation des citoyens] Choisissez la formulation correcte : « Les notes de service sont prêtes. Je ___ ai transmises ce matin. »",
+    "options": [
+      "les",
+      "leur",
+      "lui"
+    ],
+    "answer": 0,
+    "explanations": [
+      "Le pronom COD « les » remplace « les notes de service » (féminin pluriel).",
+      "« Leur » est un pronom COI qui s'applique aux personnes (« envoyer à quelqu'un »).",
+      "« Lui » est un pronom COI masculin/féminin singulier."
+    ]
+  },
+  {
+    "id": "wq-839",
+    "theme": "it-digital",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Logical connectors for cause, consequence and restriction",
+    "prompt": "[Numérique et technologies] Choisissez le connecteur approprié : « Le budget a été réduit ; ___, certains projets seront reportés. »",
+    "options": [
+      "par conséquent",
+      "bien que",
+      "toutefois"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Par conséquent » exprime la conséquence logique d'une décision budgétaire.",
+      "« Bien que » est une conjonction de concession nécessitant une subordonnée au subjonctif.",
+      "« Toutefois » marque une opposition et non une suite logique directe."
+    ]
+  },
+  {
+    "id": "wq-840",
+    "theme": "finance",
+    "skill": "writing",
+    "level": "B",
+    "objective": "Verbal nuance between permission, recommendation and obligation",
+    "prompt": "[Gestion financière] Complétez avec la nuance de recommandation appropriée : « Il est ___ de réviser le document avant la réunion. »",
+    "options": [
+      "conseillé",
+      "obligatoire",
+      "interdit"
+    ],
+    "answer": 0,
+    "explanations": [
+      "« Conseillé » exprime une recommandation souple sans imposer une contrainte absolue.",
+      "« Obligatoire » exprime une exigence stricte et non une simple suggestion.",
+      "« Interdit » exprime une prohibition, ce qui contredit l'idée de réviser un document."
+    ]
+  }
+];
